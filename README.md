@@ -4,7 +4,9 @@
 [![Go Report Card](https://goreportcard.com/badge/git.sr.ht/~jamesponddotco/acopw-go)](https://goreportcard.com/report/git.sr.ht/~jamesponddotco/acopw-go)
 [![builds.sr.ht status](https://builds.sr.ht/~jamesponddotco/acopw-go.svg)](https://builds.sr.ht/~jamesponddotco/acopw-go?)
 
-> **Note**: This library has not been reviewed by a security expert yet.
+> **Note**: Neither this project nor the underlying cryptograhic
+> implementation have been independently audited. This project is a work
+> in progress.
 
 Package `acopw`—accio password, get it?—provides a simple way to generate cryptographically secure random and diceware passwords, and PINs.
 
