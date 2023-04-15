@@ -2,10 +2,10 @@ package acopw
 
 import (
 	"crypto/rand"
-	"encoding/binary"
 	"io"
 	"sync"
 
+	"git.sr.ht/~jamesponddotco/xstd-go/xcrypto/xrand"
 	"git.sr.ht/~jamesponddotco/xstd-go/xerrors"
 	"git.sr.ht/~jamesponddotco/xstd-go/xstrings"
 )
@@ -65,28 +65,21 @@ func (r *Random) Generate() string {
 	}
 
 	var (
-		charset  = r.Charset()
-		reader   = r.reader()
-		password = make([]byte, r.Length)
+		charset    = r.Charset()
+		reader     = r.reader()
+		password   = make([]byte, r.Length)
+		bufferSize = int(float64(r.Length) * 1.3)
 	)
 
-	for iter, cache, remain := r.Length-1, int64(0), 0; iter >= 0; {
-		if remain == 0 {
-			err := binary.Read(reader, binary.BigEndian, &cache)
-			if err != nil {
-				panic(err)
-			}
-
-			remain = _indexMax
+	for i, j, randomBytes := 0, 0, []byte{}; i < r.Length; j++ {
+		if j%bufferSize == 0 {
+			randomBytes = xrand.BytesWithReader(bufferSize, reader)
 		}
 
-		if index := int(cache & _indexMask); index < len(charset) {
-			password[iter] = charset[index]
-			iter--
+		if idx := int(randomBytes[j%bufferSize] & _indexMask); idx < len(charset) {
+			password[i] = charset[idx]
+			i++
 		}
-
-		cache >>= _indexBits
-		remain--
 	}
 
 	return string(password)
