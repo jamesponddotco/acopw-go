@@ -1,0 +1,18 @@
+---
+image: 'archlinux'
+packages:
+  - 'go'
+  - 'make'
+sources:
+  - https://git.sr.ht/~jamesponddotco/acopw-go
+tasks:
+  - setup: |
+      cd acopw-go
+      make init
+  - lint: |
+      cd acopw-go
+      export PATH="${HOME}/go/bin:${PATH}"
+      make lint
+  - test: |
+      cd acopw-go
+      make test
