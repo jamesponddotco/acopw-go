@@ -9,7 +9,6 @@ import (
 func ExampleDiceware_Generate() {
 	// Define password policy.
 	password := acopw.Diceware{
-		Separator:  " ",  // Use a space as a separator.
 		Length:     7,    // Use 7 words.
 		Capitalize: true, // Capitalize the first letter of a random word.
 	}

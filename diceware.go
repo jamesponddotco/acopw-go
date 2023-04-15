@@ -41,6 +41,10 @@ func (d *Diceware) Generate() string {
 		d.Length = DefaultDicewareLength
 	}
 
+	if d.Separator == "" {
+		d.Separator = d.randomSeparator()
+	}
+
 	words := make([]string, d.Length) //nolint:makezero // we don't need to zero the slice
 
 	for i := 0; i < d.Length; i++ {
@@ -81,4 +85,14 @@ func (d *Diceware) randomIndex() int {
 	}
 
 	return int(index % uint32(len(_words)))
+}
+
+// randomSeparator returns a random separator for a diceware password.
+func (d *Diceware) randomSeparator() string {
+	var (
+		separators = []string{"-", "_", ".", ";", " ", "/"}
+		index      = xrand.IntChaChaCha(len(separators), d.reader())
+	)
+
+	return separators[index]
 }
