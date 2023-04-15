@@ -13,7 +13,10 @@ import (
 //go:embed words/word-list.txt
 var _wordsData string
 
-var _words = strings.Split(_wordsData, "\n") //nolint:gochecknoglobals // we want this initialized with the package
+var (
+	_words      = strings.Split(_wordsData, "\n")        //nolint:gochecknoglobals // we want this initialized with the package
+	_separators = []string{"-", "_", ".", ";", " ", "/"} //nolint:gochecknoglobals // keeping it global avoids us redefining them every time
+)
 
 // DefaultDicewareLength is the default length of a diceware password.
 const DefaultDicewareLength int = 8
@@ -89,10 +92,7 @@ func (d *Diceware) randomIndex() int {
 
 // randomSeparator returns a random separator for a diceware password.
 func (d *Diceware) randomSeparator() string {
-	var (
-		separators = []string{"-", "_", ".", ";", " ", "/"}
-		index      = xrand.IntChaChaCha(len(separators), d.reader())
-	)
+	index := xrand.IntChaChaCha(len(_separators), d.reader())
 
-	return separators[index]
+	return _separators[index]
 }
