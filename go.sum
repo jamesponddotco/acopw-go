@@ -1,2 +1,8 @@
 git.sr.ht/~jamesponddotco/xstd-go v0.0.0-20230412161930-c04ea8b2a9f9 h1:kTWCUD5w79RAi7GkQzhfA8BK+LsrQ1suDwiXHzmJ2LA=
 git.sr.ht/~jamesponddotco/xstd-go v0.0.0-20230412161930-c04ea8b2a9f9/go.mod h1:zU/LY2+XYCYYqDzThtdAdJgmgSNJBD4Jf/21NG0eH2o=
+git.sr.ht/~jamesponddotco/xstd-go v0.0.0-20230414223430-a84829971683 h1:7cG2C1EUbe3BlggrtovEr7ps/WbNudWFYpnpOTclcuo=
+git.sr.ht/~jamesponddotco/xstd-go v0.0.0-20230414223430-a84829971683/go.mod h1:0tqdK5/MZYSPxAiwtG4LlVfdQ+iaFoksU/FTIGQ/v/Y=
+golang.org/x/crypto v0.8.0 h1:pd9TJtTueMTVQXzk8E2XESSMQDj/U7OUu0PqJqPXQjQ=
+golang.org/x/crypto v0.8.0/go.mod h1:mRqEX+O9/h5TFCrQhkgjo2yKi0yYA+9ecGkdQoHrywE=
+golang.org/x/sys v0.7.0 h1:3jlCCIQZPdOYu1h8BkNvLz8Kgwtae2cagcG/VamtZRU=
+golang.org/x/sys v0.7.0/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
