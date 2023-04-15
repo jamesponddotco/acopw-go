@@ -3,7 +3,6 @@ package acopw
 import (
 	"crypto/rand"
 	_ "embed"
-	"encoding/binary"
 	"io"
 	"strings"
 
@@ -45,14 +44,13 @@ func (d *Diceware) Generate() string {
 	}
 
 	if d.Separator == "" {
-		d.Separator = d.randomSeparator()
+		d.Separator = d.randomElement(_separators)
 	}
 
 	words := make([]string, d.Length) //nolint:makezero // we don't need to zero the slice
 
 	for i := 0; i < d.Length; i++ {
-		index := d.randomIndex()
-		words[i] = _words[index]
+		words[i] = d.randomElement(_words)
 	}
 
 	xrand.Shuffle(words, d.reader())
@@ -75,24 +73,9 @@ func (d *Diceware) reader() io.Reader {
 	return rand.Reader
 }
 
-// randomIndex returns a random index into the word list.
-func (d *Diceware) randomIndex() int {
-	var (
-		index  uint32
-		reader = d.reader()
-	)
+// randomElement returns a random element from the given string silce.
+func (d *Diceware) randomElement(elements []string) string {
+	index := xrand.IntChaChaCha(len(elements), d.reader())
 
-	err := binary.Read(reader, binary.BigEndian, &index)
-	if err != nil {
-		panic(err)
-	}
-
-	return int(index % uint32(len(_words)))
-}
-
-// randomSeparator returns a random separator for a diceware password.
-func (d *Diceware) randomSeparator() string {
-	index := xrand.IntChaChaCha(len(_separators), d.reader())
-
-	return _separators[index]
+	return elements[index]
 }
