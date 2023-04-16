@@ -77,3 +77,23 @@ func TestDiceware_Generate(t *testing.T) {
 		})
 	}
 }
+
+func FuzzDicewareRandom(f *testing.F) {
+	f.Fuzz(func(t *testing.T, length int, capitalize bool) {
+		diceware := &acopw.Diceware{
+			Rand:       rand.Reader,
+			Separator:  " ",
+			Length:     length,
+			Capitalize: capitalize,
+		}
+
+		got := diceware.Generate()
+		if got == "" {
+			t.Errorf("Diceware.Generate() = %v, want non-empty string", got)
+		}
+
+		if length > 1 && len(strings.Split(got, " ")) != length {
+			t.Errorf("Diceware.Generate() = %v, want %d words", got, length)
+		}
+	})
+}

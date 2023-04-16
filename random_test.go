@@ -47,3 +47,19 @@ func TestRandom_Generate(t *testing.T) {
 		})
 	}
 }
+
+func FuzzRandomGenerate(f *testing.F) {
+	f.Fuzz(func(t *testing.T, in int) {
+		t.Parallel()
+
+		r := &acopw.Random{
+			Rand:   rand.Reader,
+			Length: in,
+		}
+
+		got := r.Generate()
+		if in > 0 && len(got) != in {
+			t.Errorf("Random.Generate() = %v, want %v", got, in)
+		}
+	})
+}

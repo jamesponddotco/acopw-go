@@ -47,3 +47,19 @@ func TestPIN_Generate(t *testing.T) {
 		})
 	}
 }
+
+func FuzzPINGenerate(f *testing.F) {
+	f.Fuzz(func(t *testing.T, in int) {
+		t.Parallel()
+
+		p := &acopw.PIN{
+			Rand:   rand.Reader,
+			Length: in,
+		}
+
+		got := p.Generate()
+		if in > 0 && len(got) != in {
+			t.Errorf("PIN.Generate() = %v, want %v", got, in)
+		}
+	})
+}
