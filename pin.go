@@ -10,6 +10,10 @@ const DefaultPINLength int = 6
 
 // PIN contains configuration options for generating PIN pins.
 type PIN struct {
+	// random is a pointer to the Random struct that is reused for generating
+	// PINs.
+	random *Random
+
 	// Rand provides the source of entropy for generating the PIN. If Rand is
 	// nil, the cryptographic random reader in package crypto/rand is used.
 	Rand io.Reader
@@ -24,13 +28,13 @@ func (p *PIN) Generate() string {
 		p.Length = DefaultPINLength
 	}
 
-	pin := &Random{
+	p.random = &Random{
 		Length:     p.Length,
 		Rand:       p.reader(),
 		UseNumbers: true,
 	}
 
-	return pin.Generate()
+	return p.random.Generate()
 }
 
 // reader returns the reader to use for generating the PIN.
