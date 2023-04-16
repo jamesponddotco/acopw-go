@@ -1,6 +1,7 @@
 package acopw_test
 
 import (
+	"crypto/rand"
 	"strings"
 	"testing"
 
@@ -42,6 +43,7 @@ func TestDiceware_Generate(t *testing.T) {
 		{
 			name: "NoCapitalization",
 			diceware: acopw.Diceware{
+				Rand:       rand.Reader,
 				Separator:  " ",
 				Length:     5,
 				Capitalize: false,

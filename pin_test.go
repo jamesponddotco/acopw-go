@@ -1,6 +1,7 @@
 package acopw_test
 
 import (
+	"crypto/rand"
 	"testing"
 
 	"git.sr.ht/~jamesponddotco/acopw-go"
@@ -24,6 +25,7 @@ func TestPINGenerate(t *testing.T) {
 		{
 			name: "CustomLength",
 			pin: acopw.PIN{
+				Rand:   rand.Reader,
 				Length: 8,
 			},
 			validate: func(generated string) bool {
