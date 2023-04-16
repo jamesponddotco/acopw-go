@@ -6,14 +6,7 @@ import (
 	"sync"
 
 	"git.sr.ht/~jamesponddotco/xstd-go/xcrypto/xrand"
-	"git.sr.ht/~jamesponddotco/xstd-go/xerrors"
 	"git.sr.ht/~jamesponddotco/xstd-go/xstrings"
-)
-
-const (
-
-	// ErrNoCharacterClasses is returned when no character classes are used.
-	ErrNoCharacterClasses xerrors.Error = "at least one character class must be used"
 )
 
 const (
