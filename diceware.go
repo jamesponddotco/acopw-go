@@ -54,7 +54,7 @@ func (d *Diceware) Generate() string {
 
 	if d.wordsPool.New == nil {
 		d.wordsPool.New = func() any {
-			return make([]string, 0, DefaultDicewareLength)
+			return make([]string, 0, d.Length)
 		}
 	}
 
