@@ -14,11 +14,11 @@ func TestDiceware_Generate(t *testing.T) {
 	tests := []struct {
 		validate func(string) bool
 		name     string
-		diceware acopw.Diceware
+		diceware *acopw.Diceware
 	}{
 		{
 			name: "Default",
-			diceware: acopw.Diceware{
+			diceware: &acopw.Diceware{
 				Separator:  " ",
 				Length:     0,
 				Capitalize: true,
@@ -42,7 +42,7 @@ func TestDiceware_Generate(t *testing.T) {
 		},
 		{
 			name: "NoCapitalization",
-			diceware: acopw.Diceware{
+			diceware: &acopw.Diceware{
 				Rand:       rand.Reader,
 				Separator:  " ",
 				Length:     5,

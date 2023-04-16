@@ -7,7 +7,7 @@ import (
 	"git.sr.ht/~jamesponddotco/acopw-go"
 )
 
-func TestPINGenerate(t *testing.T) {
+func TestPIN_Generate(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {

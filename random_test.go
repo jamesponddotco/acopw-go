@@ -7,7 +7,7 @@ import (
 	"git.sr.ht/~jamesponddotco/acopw-go"
 )
 
-func TestRandomGenerate(t *testing.T) {
+func TestRandom_Generate(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
