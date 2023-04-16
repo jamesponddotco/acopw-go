@@ -11,9 +11,9 @@ func TestRandomGenerate(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name     string
 		random   *acopw.Random
 		validate func(string) bool
+		name     string
 	}{
 		{
 			name:   "DefaultConfiguration",

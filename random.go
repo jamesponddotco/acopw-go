@@ -99,8 +99,10 @@ func (r *Random) Charset() string {
 			charset += Symbols
 		}
 
-		for _, excluded := range r.ExcludedCharset {
-			charset = xstrings.Remove(charset, excluded)
+		if len(r.ExcludedCharset) > 0 {
+			for _, excluded := range r.ExcludedCharset {
+				charset = xstrings.Remove(charset, excluded)
+			}
 		}
 
 		r.charset = charset

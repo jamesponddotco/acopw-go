@@ -5,8 +5,10 @@ import (
 	_ "embed"
 	"io"
 	"strings"
+	"sync"
 
 	"git.sr.ht/~jamesponddotco/xstd-go/xcrypto/xrand"
+	"git.sr.ht/~jamesponddotco/xstd-go/xstrings"
 )
 
 //go:embed words/word-list.txt
@@ -22,6 +24,9 @@ const DefaultDicewareLength int = 8
 
 // Diceware contains configuration options for generating a diceware password.
 type Diceware struct {
+	// wordsPool is the pool of words to use for generating the password.
+	wordsPool sync.Pool
+
 	// Rand provides the source of entropy for generating the diceware
 	// password. If Rand is nil, the cryptographic random reader in package
 	// crypto/rand is used.
@@ -47,7 +52,19 @@ func (d *Diceware) Generate() string {
 		d.Separator = d.randomElement(_separators)
 	}
 
-	words := make([]string, d.Length) //nolint:makezero // we don't need to zero the slice
+	if d.wordsPool.New == nil {
+		d.wordsPool.New = func() any {
+			return make([]string, 0, DefaultDicewareLength)
+		}
+	}
+
+	words, ok := d.wordsPool.Get().([]string)
+	if !ok {
+		return ""
+	}
+
+	words = words[:d.Length]
+	defer d.wordsPool.Put(&words)
 
 	for i := 0; i < d.Length; i++ {
 		words[i] = d.randomElement(_words)
@@ -61,7 +78,7 @@ func (d *Diceware) Generate() string {
 		words[capitalizeIndex] = strings.ToUpper(words[capitalizeIndex])
 	}
 
-	return strings.Join(words, d.Separator)
+	return xstrings.JoinWithSeparator(d.Separator, words...)
 }
 
 // reader returns the reader to use for generating the diceware password.

@@ -12,9 +12,9 @@ func TestDiceware_Generate(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
+		validate func(string) bool
 		name     string
 		diceware acopw.Diceware
-		validate func(string) bool
 	}{
 		{
 			name: "Default",

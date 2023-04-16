@@ -11,9 +11,9 @@ func TestPINGenerate(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name     string
-		pin      acopw.PIN
 		validate func(string) bool
+		pin      acopw.PIN
+		name     string
 	}{
 		{
 			name: "DefaultLength",
