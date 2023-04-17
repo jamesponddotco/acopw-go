@@ -23,7 +23,7 @@ hefty_spacetime_ENVELOPE_hearing_trend_fossils_unusable
 deplored-desert-victory-runtime-coupland-costly-CLASSICS
 ```
 
-The packages uses [crypto/rand](https://godocs.io/crypto/rand) and a list with *over 23 thousand* words for added randomness.
+The packages uses [crypto/rand](https://godocs.io/crypto/rand) and a list with **over 23 thousand** words for added randomness.
 
 ## Installation
 
