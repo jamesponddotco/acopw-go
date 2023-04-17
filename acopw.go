@@ -3,6 +3,6 @@
 package acopw
 
 const (
-	_indexBits = 6
+	_indexBits = 7
 	_indexMask = 1<<_indexBits - 1
 )
