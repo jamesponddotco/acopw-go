@@ -16,3 +16,6 @@ tasks:
   - test: |
       cd acopw-go
       make test
+  - build: |
+      cd acopw-go/cmd/acopw
+      make

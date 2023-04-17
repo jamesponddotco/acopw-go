@@ -26,7 +26,6 @@ enable = [
   "exportloopref",
   "forbidigo",
   "forcetypeassert",
-  "funlen",
   "gci",
   "gochecknoglobals",
   "gochecknoinits",
@@ -147,9 +146,6 @@ enable = [
 
     [[linters-settings.revive.rules]]
       name = "context-keys-type"
-
-    [[linters-settings.revive.rules]]
-      name = "deep-exit"
 
     [[linters-settings.revive.rules]]
       name = "defer"
@@ -309,7 +305,6 @@ max-same-issues = 0
     linters = [
       "containedctx",
       "contextcheck",
-      "funlen",
       "nilerr",
       "noctx",
       "varnamelen",
