@@ -8,21 +8,28 @@
 > implementation have been independently audited. This project is a work
 > in progress.
 
-Package `acopw`—accio password, get it?—provides a simple way to generate cryptographically secure random and diceware passwords, and PINs.
+Package `acopw` provides an easy-to-use, versatile and cryptographically
+secure way to generate cryptographically secure random passwords,
+passphrases, and PINs.
 
-## Features
+**Samples for what this package may generate:**
 
-- Generate passwords with customizable character sets.
-- Generate secure PINs of any length.
-- Simple and easy-to-use API.
-- Cryptographically secure random number generation using
-  [crypto/rand](https://godocs.io/crypto/rand)
+```console
+(#lR?xdVe^o#;|{K>k%Y$,SXnn?nLl[=+|^cf|AWCtA}YoP(Vb=G^rwj]f;u@~Py
+u{AQTrcOcHG#/.K>j{?P=\=jm%O>)hC;.Y%l,~fE'v];^@AY!?I}=DzyKlE@GEKb
+728079
+996388
+hefty_spacetime_ENVELOPE_hearing_trend_fossils_unusable
+deplored-desert-victory-runtime-coupland-costly-CLASSICS
+```
+
+The packages uses [crypto/rand](https://godocs.io/crypto/rand) and a list with *over 23 thousand* words for added randomness.
 
 ## Installation
 
 To install `acopw`, run:
 
-```sh
+```console
 go get git.sr.ht/~jamesponddotco/acopw-go
 ```
 
