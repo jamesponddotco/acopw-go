@@ -13,7 +13,7 @@ import (
 func Run() int {
 	rootCmd := &cobra.Command{
 		Use:               build.Name,
-		Short:             "acopw is an easy-to-use and secure utility for generating random passwords, passphrases, and PINs.",
+		Short:             "Generate cryptographically secure random passwords, passphrases, and PINs.",
 		CompletionOptions: cobra.CompletionOptions{HiddenDefaultCmd: true},
 		Version:           build.Version,
 	}
