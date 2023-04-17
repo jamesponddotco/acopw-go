@@ -150,13 +150,18 @@ func addRandomCommand(rootCmd *cobra.Command) {
 				return
 			}
 
+			allFalse := !numbers && !uppercase && !lowercase && !symbols
+
 			generator := &acopw.Random{
-				Length:          length,
-				UseLower:        lowercase,
-				UseUpper:        uppercase,
-				UseNumbers:      numbers,
-				UseSymbols:      symbols,
-				ExcludedCharset: []string{excludeSet},
+				Length:     length,
+				UseLower:   lowercase || allFalse,
+				UseUpper:   uppercase || allFalse,
+				UseNumbers: numbers || allFalse,
+				UseSymbols: symbols || allFalse,
+			}
+
+			if excludeSet != "" {
+				generator.ExcludedCharset = []string{excludeSet}
 			}
 
 			password := generator.Generate()
@@ -166,10 +171,10 @@ func addRandomCommand(rootCmd *cobra.Command) {
 	}
 
 	randomCmd.Flags().IntP("length", "l", 64, "The length of the generated password.")
-	randomCmd.Flags().BoolP("numbers", "n", true, "Whether to include numbers in the generated password.")
-	randomCmd.Flags().BoolP("uppercase", "U", true, "Whether to include uppercase letters in the generated password.")
-	randomCmd.Flags().BoolP("lowercase", "L", true, "Whether to include lowercase letters in the generated password.")
-	randomCmd.Flags().BoolP("symbols", "s", true, "Whether to include symbols in the generated password.")
+	randomCmd.Flags().BoolP("numbers", "n", false, "Whether to include numbers in the generated password.")
+	randomCmd.Flags().BoolP("uppercase", "U", false, "Whether to include uppercase letters in the generated password.")
+	randomCmd.Flags().BoolP("lowercase", "L", false, "Whether to include lowercase letters in the generated password.")
+	randomCmd.Flags().BoolP("symbols", "s", false, "Whether to include symbols in the generated password.")
 	randomCmd.Flags().StringP("exclude", "e", "", "A string of characters to exclude from the generated password.")
 
 	rootCmd.AddCommand(randomCmd)
