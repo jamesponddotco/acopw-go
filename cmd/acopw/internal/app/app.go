@@ -18,9 +18,7 @@ func Run() int {
 		Version:           build.Version,
 	}
 
-	addDicewareCommand(rootCmd)
-	addPinCommand(rootCmd)
-	addRandomCommand(rootCmd)
+	AddCommands(rootCmd)
 
 	if err := rootCmd.Execute(); err != nil {
 		output.Error(err)
@@ -29,6 +27,12 @@ func Run() int {
 	}
 
 	return 0
+}
+
+func AddCommands(rootCmd *cobra.Command) {
+	addDicewareCommand(rootCmd)
+	addPinCommand(rootCmd)
+	addRandomCommand(rootCmd)
 }
 
 func addDicewareCommand(rootCmd *cobra.Command) {
