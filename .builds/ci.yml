@@ -3,6 +3,7 @@ image: 'archlinux'
 packages:
   - 'go'
   - 'make'
+  - 'scdoc'
 sources:
   - https://git.sr.ht/~jamesponddotco/acopw-go
 tasks:
