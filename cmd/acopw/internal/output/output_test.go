@@ -1,7 +1,6 @@
 package output_test
 
 import (
-	"bytes"
 	"errors"
 	"io"
 	"os"
@@ -12,21 +11,7 @@ import (
 	"github.com/creack/pty"
 )
 
-type testWriter struct {
-	buf bytes.Buffer
-}
-
-func (tw *testWriter) Write(p []byte) (n int, err error) {
-	return tw.buf.Write(p)
-}
-
-func (tw *testWriter) String() string {
-	return tw.buf.String()
-}
-
 func TestPassword(t *testing.T) {
-	t.Parallel()
-
 	tests := []struct {
 		name     string
 		password string
@@ -45,11 +30,7 @@ func TestPassword(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
-
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-
 			// Redirect the output.
 			oldStdout := os.Stdout
 			r, w, _ := os.Pipe()
@@ -70,8 +51,6 @@ func TestPassword(t *testing.T) {
 }
 
 func TestError(t *testing.T) {
-	t.Parallel()
-
 	tests := []struct {
 		name     string
 		err      error
@@ -90,11 +69,7 @@ func TestError(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
-
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-
 			// Redirect the output.
 			oldStderr := os.Stderr
 			r, w, _ := os.Pipe()
@@ -115,8 +90,6 @@ func TestError(t *testing.T) {
 }
 
 func TestPasswordTerminal(t *testing.T) {
-	t.Parallel()
-
 	tests := []struct {
 		name     string
 		password string
@@ -135,11 +108,7 @@ func TestPasswordTerminal(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
-
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-
 			// Redirect the output
 			oldStdout := os.Stdout
 			r, w, _ := pty.Open()
@@ -160,8 +129,6 @@ func TestPasswordTerminal(t *testing.T) {
 }
 
 func TestErrorTerminal(t *testing.T) {
-	t.Parallel()
-
 	tests := []struct {
 		name     string
 		err      error
@@ -180,11 +147,7 @@ func TestErrorTerminal(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
-
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-
 			// Redirect the output
 			oldStderr := os.Stderr
 			r, w, _ := pty.Open()

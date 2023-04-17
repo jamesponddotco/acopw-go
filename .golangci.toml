@@ -46,7 +46,6 @@ enable = [
   "noctx",
   "nolintlint",
   "nosprintfhostport",
-  "paralleltest",
   "prealloc",
   "predeclared",
   "reassign",
@@ -305,6 +304,8 @@ max-same-issues = 0
     linters = [
       "containedctx",
       "contextcheck",
+      "errcheck",
+      "goerr113",
       "nilerr",
       "noctx",
       "varnamelen",
