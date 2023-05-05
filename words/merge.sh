@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
 
+TMPFILE="$(mktemp)"
+# Make sure we clean up the tmpfile
+trap "rm -f ${TMPFILE}" EXIT
+
 # Merge all files starting with "list-" in this directory.
-for file in list-*; do
-    cat "${file}" >> "${TMP:-/tmp}/word-list.txt"
-done
-
-cat "${TMP:-/tmp}/word-list.txt" \
-  | sort -u -S 30% > 'word-list.txt'
-
-exit 0
+sort -u -S 30% list-* > "${TMPFILE}" && mv "${TMPFILE}" word-list.txt
