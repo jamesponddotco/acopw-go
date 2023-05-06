@@ -67,7 +67,10 @@ func addDicewareCommand(rootCmd *cobra.Command) {
 				Capitalize: capitalized,
 			}
 
-			password := generator.Generate()
+			password, err := generator.Generate()
+			if err != nil {
+				output.Error("Error generating password:", err)
+			}
 
 			output.Password(password)
 		},
