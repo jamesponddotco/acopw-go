@@ -70,7 +70,11 @@ func TestDiceware_Generate(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			got := tt.diceware.Generate()
+			got, err := tt.diceware.Generate()
+			if err != nil {
+				t.Fatal(err)
+			}
+
 			if !tt.validate(got) {
 				t.Errorf("Diceware.Generate() = %v, validation failed", got)
 			}
@@ -87,7 +91,11 @@ func FuzzDicewareRandom(f *testing.F) {
 			Capitalize: capitalize,
 		}
 
-		got := diceware.Generate()
+		got, err := diceware.Generate()
+		if err != nil {
+			t.Fatal(err)
+		}
+
 		if got == "" {
 			t.Errorf("Diceware.Generate() = %v, want non-empty string", got)
 		}

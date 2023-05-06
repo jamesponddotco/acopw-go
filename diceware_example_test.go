@@ -14,6 +14,12 @@ func ExampleDiceware_Generate() {
 	}
 
 	// Generate a password.
-	log.Print(password.Generate())
+	pass, err := password.Generate()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Print the password.
+	log.Print(pass)
 	// Output:
 }

@@ -15,7 +15,12 @@ func BenchmarkDiceware_Generate(b *testing.B) {
 
 	b.ResetTimer()
 
+	var err error
+
 	for i := 0; i < b.N; i++ {
-		_ = diceware.Generate()
+		_, err = diceware.Generate()
+		if err != nil {
+			b.Fatal(err)
+		}
 	}
 }

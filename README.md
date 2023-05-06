@@ -83,7 +83,10 @@ func main() {
 		Capitalize: true,
 	}
 
-	password := diceware.Generate()
+	password,err := diceware.Generate()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	log.Println(password)
 }

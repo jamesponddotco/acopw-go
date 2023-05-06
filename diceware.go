@@ -3,12 +3,23 @@ package acopw
 import (
 	"crypto/rand"
 	_ "embed"
+	"fmt"
 	"io"
 	"strings"
 	"sync"
 
+	"git.sr.ht/~jamesponddotco/acopw-go/internal/cryptoutil"
 	"git.sr.ht/~jamesponddotco/xstd-go/xcrypto/xrand"
+	"git.sr.ht/~jamesponddotco/xstd-go/xerrors"
 	"git.sr.ht/~jamesponddotco/xstd-go/xstrings"
+)
+
+const (
+	// ErrDicewarePassword is returned when a diceware password cannot be generated.
+	ErrDicewarePassword xerrors.Error = "failed to generate diceware password"
+
+	// ErrWordPool is returned when words cannot be retrieved from the pool.
+	ErrWordPool xerrors.Error = "failed to get words from pool"
 )
 
 //go:embed words/word-list.txt
@@ -43,13 +54,18 @@ type Diceware struct {
 }
 
 // Generate generates a diceware password.
-func (d *Diceware) Generate() string {
+func (d *Diceware) Generate() (string, error) {
 	if d.Length < 1 {
 		d.Length = DefaultDicewareLength
 	}
 
 	if d.Separator == "" {
-		d.Separator = d.randomElement(_separators)
+		separator, err := cryptoutil.RandomElement(d.reader(), _separators)
+		if err != nil {
+			return "", fmt.Errorf("%w: %w", ErrDicewarePassword, err)
+		}
+
+		d.Separator = separator
 	}
 
 	if d.wordsPool.New == nil {
@@ -60,25 +76,33 @@ func (d *Diceware) Generate() string {
 
 	words, ok := d.wordsPool.Get().([]string)
 	if !ok {
-		return ""
+		return "", fmt.Errorf("%w: %w", ErrDicewarePassword, ErrWordPool)
 	}
 
 	words = words[:d.Length]
 	defer d.wordsPool.Put(&words)
 
 	for i := 0; i < d.Length; i++ {
-		words[i] = d.randomElement(_words)
+		element, err := cryptoutil.RandomElement(d.reader(), _words)
+		if err != nil {
+			return "", fmt.Errorf("%w: %w", ErrDicewarePassword, err)
+		}
+
+		words[i] = element
 	}
 
 	xrand.Shuffle(words, d.reader())
 
-	// Capitalize a random word if required.
 	if d.Capitalize {
-		capitalizeIndex := xrand.IntChaChaCha(len(words), d.reader())
+		capitalizeIndex, err := cryptoutil.Int(d.reader(), len(words))
+		if err != nil {
+			return "", fmt.Errorf("%w: %w", ErrDicewarePassword, err)
+		}
+
 		words[capitalizeIndex] = strings.ToUpper(words[capitalizeIndex])
 	}
 
-	return xstrings.JoinWithSeparator(d.Separator, words...)
+	return xstrings.JoinWithSeparator(d.Separator, words...), nil
 }
 
 // reader returns the reader to use for generating the diceware password.
@@ -88,11 +112,4 @@ func (d *Diceware) reader() io.Reader {
 	}
 
 	return rand.Reader
-}
-
-// randomElement returns a random element from the given string silce.
-func (d *Diceware) randomElement(elements []string) string {
-	index := xrand.IntChaChaCha(len(elements), d.reader())
-
-	return elements[index]
 }
