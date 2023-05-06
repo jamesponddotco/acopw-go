@@ -33,6 +33,9 @@ To install `acopw`, run:
 go get git.sr.ht/~jamesponddotco/acopw-go
 ```
 
+You can also [install `acopw` the command-line
+application](https://git.sr.ht/~jamesponddotco/acopw-go/tree/trunk/item/cmd/acopw/README.md).
+
 ## Usage
 
 ### Random passwords
