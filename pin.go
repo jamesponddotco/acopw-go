@@ -28,10 +28,12 @@ func (p *PIN) Generate() string {
 		p.Length = DefaultPINLength
 	}
 
-	p.random = &Random{
-		Length:     p.Length,
-		Rand:       p.reader(),
-		UseNumbers: true,
+	if p.random == nil {
+		p.random = &Random{
+			Length:     p.Length,
+			Rand:       p.reader(),
+			UseNumbers: true,
+		}
 	}
 
 	return p.random.Generate()
