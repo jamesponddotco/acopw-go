@@ -2,17 +2,24 @@ package acopw_test
 
 import (
 	"crypto/rand"
+	"errors"
 	"strings"
 	"testing"
 
 	"git.sr.ht/~jamesponddotco/acopw-go"
 )
 
+type errorReader struct{}
+
+func (*errorReader) Read(_ []byte) (int, error) {
+	return 0, errors.New("read error")
+}
+
 func TestDiceware_Generate(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		validate func(string) bool
+		validate func(string, error) bool
 		name     string
 		diceware *acopw.Diceware
 	}{
@@ -23,7 +30,11 @@ func TestDiceware_Generate(t *testing.T) {
 				Length:     0,
 				Capitalize: true,
 			},
-			validate: func(generated string) bool {
+			validate: func(generated string, err error) bool {
+				if err != nil {
+					return false
+				}
+
 				words := strings.Split(generated, " ")
 				if len(words) != 8 {
 					return false
@@ -48,7 +59,11 @@ func TestDiceware_Generate(t *testing.T) {
 				Length:     5,
 				Capitalize: false,
 			},
-			validate: func(generated string) bool {
+			validate: func(generated string, err error) bool {
+				if err != nil {
+					return false
+				}
+
 				words := strings.Split(generated, " ")
 				if len(words) != 5 {
 					return false
@@ -63,20 +78,49 @@ func TestDiceware_Generate(t *testing.T) {
 				return true
 			},
 		},
+		{
+			name: "SeparatorError",
+			diceware: &acopw.Diceware{
+				Rand: &errorReader{},
+			},
+			validate: func(generated string, err error) bool {
+				return err != nil
+			},
+		},
+		{
+			name: "CapitalizeError",
+			diceware: &acopw.Diceware{
+				Rand:       &errorReader{},
+				Separator:  " ",
+				Length:     5,
+				Capitalize: true,
+			},
+			validate: func(generated string, err error) bool {
+				return err != nil
+			},
+		},
+		{
+			name: "RandomElementError",
+			diceware: &acopw.Diceware{
+				Rand:      &errorReader{},
+				Separator: " ",
+			},
+			validate: func(generated string, err error) bool {
+				return err != nil
+			},
+		},
 	}
 
 	for _, tt := range tests {
 		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
 			got, err := tt.diceware.Generate()
-			if err != nil {
-				t.Fatal(err)
-			}
 
-			if !tt.validate(got) {
-				t.Errorf("Diceware.Generate() = %v, validation failed", got)
+			if !tt.validate(got, err) {
+				t.Errorf("Diceware.Generate() = %v, error = %v", got, err)
 			}
 		})
 	}
