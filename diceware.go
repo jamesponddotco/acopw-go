@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"git.sr.ht/~jamesponddotco/acopw-go/internal/cryptoutil"
-	"git.sr.ht/~jamesponddotco/xstd-go/xcrypto/xrand"
 	"git.sr.ht/~jamesponddotco/xstd-go/xerrors"
 	"git.sr.ht/~jamesponddotco/xstd-go/xstrings"
 )
@@ -74,8 +73,6 @@ func (d *Diceware) Generate() (string, error) {
 
 		words = append(words, element)
 	}
-
-	xrand.Shuffle(words, d.reader())
 
 	if d.Capitalize {
 		capitalizeIndex, err := cryptoutil.Int(d.reader(), len(words))
