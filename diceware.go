@@ -64,7 +64,7 @@ func (d *Diceware) Generate() (string, error) {
 		d.Separator = separator
 	}
 
-	words := make([]string, d.Length)
+	words := make([]string, 0, d.Length)
 
 	for i := 0; i < d.Length; i++ {
 		element, err := cryptoutil.RandomElement(d.reader(), _words)
@@ -72,7 +72,7 @@ func (d *Diceware) Generate() (string, error) {
 			return "", fmt.Errorf("%w: %w", ErrDicewarePassword, err)
 		}
 
-		words[i] = element
+		words = append(words, element)
 	}
 
 	xrand.Shuffle(words, d.reader())
