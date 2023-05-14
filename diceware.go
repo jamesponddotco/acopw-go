@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"strings"
-	"sync"
 
 	"git.sr.ht/~jamesponddotco/acopw-go/internal/cryptoutil"
 	"git.sr.ht/~jamesponddotco/xstd-go/xcrypto/xrand"
@@ -35,9 +34,6 @@ const DefaultDicewareLength int = 8
 
 // Diceware contains configuration options for generating a diceware password.
 type Diceware struct {
-	// wordsPool is the pool of words to use for generating the password.
-	wordsPool sync.Pool
-
 	// Rand provides the source of entropy for generating the diceware
 	// password. If Rand is nil, the cryptographic random reader in package
 	// crypto/rand is used.
@@ -68,19 +64,7 @@ func (d *Diceware) Generate() (string, error) {
 		d.Separator = separator
 	}
 
-	if d.wordsPool.New == nil {
-		d.wordsPool.New = func() any {
-			return make([]string, 0, d.Length)
-		}
-	}
-
-	words, ok := d.wordsPool.Get().([]string)
-	if !ok {
-		return "", fmt.Errorf("%w: %w", ErrDicewarePassword, ErrWordPool)
-	}
-
-	words = words[:d.Length]
-	defer d.wordsPool.Put(&words)
+	words := make([]string, d.Length)
 
 	for i := 0; i < d.Length; i++ {
 		element, err := cryptoutil.RandomElement(d.reader(), _words)
