@@ -11,6 +11,11 @@ import (
 )
 
 const (
+	_RandomIndexBits = 7
+	_RandomIndexMask = 1<<_RandomIndexBits - 1
+)
+
+const (
 	Lowercase = xstrings.LowercaseLetters
 	Uppercase = xstrings.UppercaseLetters
 	Numbers   = xstrings.Numbers
@@ -70,7 +75,7 @@ func (r *Random) Generate() string {
 			randomBytes = xrand.BytesWithReader(bufferSize, reader)
 		}
 
-		if idx := int(randomBytes[j%bufferSize] & _indexMask); idx < len(charset) {
+		if idx := int(randomBytes[j%bufferSize] & _RandomIndexMask); idx < len(charset) {
 			password[i] = charset[idx]
 			i++
 		}
