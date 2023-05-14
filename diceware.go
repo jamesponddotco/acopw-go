@@ -54,13 +54,27 @@ func (d *Diceware) Generate() (string, error) {
 		d.Length = DefaultDicewareLength
 	}
 
+	var (
+		separator string
+		err       error
+	)
+
 	if d.Separator == "" {
-		separator, err := cryptoutil.RandomElement(d.reader(), _separators)
+		separator, err = cryptoutil.RandomElement(d.reader(), _separators)
 		if err != nil {
 			return "", fmt.Errorf("%w: %w", ErrDicewarePassword, err)
 		}
 
 		d.Separator = separator
+	}
+
+	capitalizeIndex := -1
+
+	if d.Capitalize {
+		capitalizeIndex, err = cryptoutil.Int(d.reader(), d.Length)
+		if err != nil {
+			return "", fmt.Errorf("%w: %w", ErrDicewarePassword, err)
+		}
 	}
 
 	words := make([]string, 0, d.Length)
@@ -71,16 +85,11 @@ func (d *Diceware) Generate() (string, error) {
 			return "", fmt.Errorf("%w: %w", ErrDicewarePassword, err)
 		}
 
-		words = append(words, element)
-	}
-
-	if d.Capitalize {
-		capitalizeIndex, err := cryptoutil.Int(d.reader(), len(words))
-		if err != nil {
-			return "", fmt.Errorf("%w: %w", ErrDicewarePassword, err)
+		if i == capitalizeIndex {
+			element = strings.ToUpper(element)
 		}
 
-		words[capitalizeIndex] = strings.ToUpper(words[capitalizeIndex])
+		words = append(words, element)
 	}
 
 	return xstrings.JoinWithSeparator(d.Separator, words...), nil
