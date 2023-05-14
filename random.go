@@ -7,6 +7,7 @@ import (
 
 	"git.sr.ht/~jamesponddotco/xstd-go/xcrypto/xrand"
 	"git.sr.ht/~jamesponddotco/xstd-go/xstrings"
+	"git.sr.ht/~jamesponddotco/xstd-go/xunsafe"
 )
 
 const (
@@ -75,7 +76,7 @@ func (r *Random) Generate() string {
 		}
 	}
 
-	return string(password)
+	return xunsafe.BytesToString(password)
 }
 
 // Charset returns the character set to use for generating the password.
