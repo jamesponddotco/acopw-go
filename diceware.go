@@ -54,18 +54,13 @@ func (d *Diceware) Generate() (string, error) {
 		d.Length = DefaultDicewareLength
 	}
 
-	var (
-		separator string
-		err       error
-	)
+	var err error
 
 	if d.Separator == "" {
-		separator, err = cryptoutil.RandomElement(d.reader(), _separators)
+		d.Separator, err = cryptoutil.RandomElement(d.reader(), _separators)
 		if err != nil {
 			return "", fmt.Errorf("%w: %w", ErrDicewarePassword, err)
 		}
-
-		d.Separator = separator
 	}
 
 	capitalizeIndex := -1
