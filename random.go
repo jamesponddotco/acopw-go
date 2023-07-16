@@ -3,7 +3,7 @@ package acopw
 import (
 	"crypto/rand"
 	"io"
-	"strings"
+	"sync"
 
 	"git.sr.ht/~jamesponddotco/xstd-go/xcrypto/xrand"
 	"git.sr.ht/~jamesponddotco/xstd-go/xstrings"
@@ -12,7 +12,7 @@ import (
 
 const (
 	_RandomIndexBits = 7
-	_RandomIndexMask = byte(1<<_RandomIndexBits - 1)
+	_RandomIndexMask = 1<<_RandomIndexBits - 1
 )
 
 const (
@@ -45,6 +45,9 @@ type Random struct {
 	UseUpper   bool
 	UseNumbers bool
 	UseSymbols bool
+
+	// once is used to ensure that the charset is only generated once.
+	once sync.Once
 }
 
 // Generate generates a random password.
@@ -61,15 +64,18 @@ func (r *Random) Generate() string {
 	}
 
 	var (
-		charset     = r.Charset()
-		charsetLen  = len(charset)
-		reader      = r.reader()
-		password    = make([]byte, r.Length)
-		randomBytes = xrand.BytesWithReader(r.Length, reader)
+		charset    = r.Charset()
+		reader     = r.reader()
+		password   = make([]byte, r.Length)
+		bufferSize = int(float64(r.Length) * 1.3)
 	)
 
-	for i, j := 0, 0; i < r.Length; j++ {
-		if idx := int(randomBytes[j%r.Length] & _RandomIndexMask); idx < charsetLen {
+	for i, j, randomBytes := 0, 0, []byte{}; i < r.Length; j++ {
+		if j%bufferSize == 0 {
+			randomBytes = xrand.BytesWithReader(bufferSize, reader)
+		}
+
+		if idx := int(randomBytes[j%bufferSize] & _RandomIndexMask); idx < len(charset) {
 			password[i] = charset[idx]
 			i++
 		}
@@ -80,35 +86,33 @@ func (r *Random) Generate() string {
 
 // Charset returns the character set to use for generating the password.
 func (r *Random) Charset() string {
-	if r.charset == "" {
-		var builder strings.Builder
-
-		builder.Grow(len(Lowercase) + len(Uppercase) + len(Numbers) + len(Symbols))
+	r.once.Do(func() {
+		var charset string
 
 		if r.UseLower {
-			builder.WriteString(Lowercase)
+			charset += Lowercase
 		}
 
 		if r.UseUpper {
-			builder.WriteString(Uppercase)
+			charset += Uppercase
 		}
 
 		if r.UseNumbers {
-			builder.WriteString(Numbers)
+			charset += Numbers
 		}
 
 		if r.UseSymbols {
-			builder.WriteString(Symbols)
+			charset += Symbols
 		}
 
 		if len(r.ExcludedCharset) > 0 {
 			for _, excluded := range r.ExcludedCharset {
-				r.charset = xstrings.Remove(builder.String(), excluded)
+				charset = xstrings.Remove(charset, excluded)
 			}
-		} else {
-			r.charset = builder.String()
 		}
-	}
+
+		r.charset = charset
+	})
 
 	return r.charset
 }
