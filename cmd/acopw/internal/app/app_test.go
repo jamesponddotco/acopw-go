@@ -31,6 +31,11 @@ func TestRun(t *testing.T) {
 			args:     []string{"random"},
 			expected: "",
 		},
+		{
+			name:     "UUID",
+			args:     []string{"uuid"},
+			expected: "",
+		},
 	}
 
 	for _, tt := range tests {

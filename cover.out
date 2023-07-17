@@ -55,3 +55,13 @@ git.sr.ht/~jamesponddotco/acopw-go/random.go:117.2,117.18 1 1
 git.sr.ht/~jamesponddotco/acopw-go/random.go:121.37,122.19 1 1
 git.sr.ht/~jamesponddotco/acopw-go/random.go:122.19,124.3 1 1
 git.sr.ht/~jamesponddotco/acopw-go/random.go:126.2,126.20 1 1
+git.sr.ht/~jamesponddotco/acopw-go/uuid.go:34.43,35.63 1 1
+git.sr.ht/~jamesponddotco/acopw-go/uuid.go:35.63,37.3 1 1
+git.sr.ht/~jamesponddotco/acopw-go/uuid.go:39.2,44.26 4 1
+git.sr.ht/~jamesponddotco/acopw-go/uuid.go:44.26,45.44 1 1
+git.sr.ht/~jamesponddotco/acopw-go/uuid.go:45.44,47.4 1 1
+git.sr.ht/~jamesponddotco/acopw-go/uuid.go:49.3,49.76 1 1
+git.sr.ht/~jamesponddotco/acopw-go/uuid.go:52.2,52.40 1 1
+git.sr.ht/~jamesponddotco/acopw-go/uuid.go:56.35,57.19 1 1
+git.sr.ht/~jamesponddotco/acopw-go/uuid.go:57.19,59.3 1 1
+git.sr.ht/~jamesponddotco/acopw-go/uuid.go:61.2,61.20 1 1

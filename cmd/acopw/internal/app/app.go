@@ -33,6 +33,7 @@ func AddCommands(rootCmd *cobra.Command) {
 	addDicewareCommand(rootCmd)
 	addPinCommand(rootCmd)
 	addRandomCommand(rootCmd)
+	addUUIDCommand(rootCmd)
 }
 
 func addDicewareCommand(rootCmd *cobra.Command) {
@@ -185,4 +186,23 @@ func addRandomCommand(rootCmd *cobra.Command) {
 	randomCmd.Flags().StringP("exclude", "e", "", "A string of characters to exclude from the generated password.")
 
 	rootCmd.AddCommand(randomCmd)
+}
+
+func addUUIDCommand(rootCmd *cobra.Command) {
+	uuidCmd := &cobra.Command{
+		Use:   "uuid",
+		Short: "Generate a random UUIDv4.",
+		Run: func(cmd *cobra.Command, args []string) {
+			var generator acopw.UUID
+
+			uuid, err := generator.Generate()
+			if err != nil {
+				output.Error("Error generating UUID:", err)
+			}
+
+			output.Password(uuid)
+		},
+	}
+
+	rootCmd.AddCommand(uuidCmd)
 }
