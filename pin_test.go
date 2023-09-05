@@ -32,6 +32,25 @@ func TestPIN_Generate(t *testing.T) {
 				return len(generated) == 8
 			},
 		},
+		{
+			name: "BigLength",
+			pin: acopw.PIN{
+				Rand:   rand.Reader,
+				Length: 128,
+			},
+			validate: func(generated string) bool {
+				return len(generated) == 128
+			},
+		},
+		{
+			name: "FailingReader",
+			pin: acopw.PIN{
+				Rand: &failingReader{},
+			},
+			validate: func(generated string) bool {
+				return generated == ""
+			},
+		},
 	}
 
 	for _, tt := range tests {

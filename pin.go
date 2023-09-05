@@ -4,14 +4,8 @@ import (
 	"crypto/rand"
 	"io"
 
-	"git.sr.ht/~jamesponddotco/xstd-go/xcrypto/xrand"
 	"git.sr.ht/~jamesponddotco/xstd-go/xstrings"
 	"git.sr.ht/~jamesponddotco/xstd-go/xunsafe"
-)
-
-const (
-	_PINIndexBits = 4
-	_PINIndexMask = 1<<_PINIndexBits - 1
 )
 
 // DefaultPINLength is the default length of a PIN.
@@ -34,21 +28,25 @@ func (p *PIN) Generate() string {
 	}
 
 	var (
-		charset    = xstrings.Numbers
-		reader     = p.reader()
-		pin        = make([]byte, p.Length)
-		bufferSize = int(float64(p.Length) * 1.3)
+		charset     = xstrings.Numbers
+		reader      = p.reader()
+		pin         = make([]byte, p.Length)
+		randomBytes = make([]byte, p.Length)
+		maxByte     = byte(256 - (256 % len(charset)))
 	)
 
-	for i, j, randomBytes := 0, 0, []byte{}; i < p.Length; j++ {
-		if j%bufferSize == 0 {
-			randomBytes = xrand.BytesWithReader(bufferSize, reader)
+	_, err := io.ReadFull(reader, randomBytes)
+	if err != nil {
+		return ""
+	}
+
+	for i := 0; i < p.Length; i++ {
+		b := randomBytes[i]
+		if b >= maxByte {
+			continue
 		}
 
-		if idx := int(randomBytes[j%bufferSize] & _PINIndexMask); idx < len(charset) {
-			pin[i] = charset[idx]
-			i++
-		}
+		pin[i] = charset[int(b)%len(charset)]
 	}
 
 	return xunsafe.BytesToString(pin)
