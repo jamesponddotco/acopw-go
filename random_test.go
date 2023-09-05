@@ -2,10 +2,17 @@ package acopw_test
 
 import (
 	"crypto/rand"
+	"errors"
 	"testing"
 
 	"git.sr.ht/~jamesponddotco/acopw-go"
 )
+
+type failingReader struct{}
+
+func (*failingReader) Read(_ []byte) (n int, err error) {
+	return 0, errors.New("forced read failure")
+}
 
 func TestRandom_Generate(t *testing.T) {
 	t.Parallel()
@@ -30,6 +37,15 @@ func TestRandom_Generate(t *testing.T) {
 			},
 			validate: func(generated string) bool {
 				return len(generated) == 12
+			},
+		},
+		{
+			name: "FailingReader",
+			random: &acopw.Random{
+				Rand: &failingReader{},
+			},
+			validate: func(generated string) bool {
+				return generated == ""
 			},
 		},
 	}

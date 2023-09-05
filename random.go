@@ -5,14 +5,8 @@ import (
 	"io"
 	"sync"
 
-	"git.sr.ht/~jamesponddotco/xstd-go/xcrypto/xrand"
 	"git.sr.ht/~jamesponddotco/xstd-go/xstrings"
 	"git.sr.ht/~jamesponddotco/xstd-go/xunsafe"
-)
-
-const (
-	_RandomIndexBits = 7
-	_RandomIndexMask = 1<<_RandomIndexBits - 1
 )
 
 const (
@@ -64,21 +58,25 @@ func (r *Random) Generate() string {
 	}
 
 	var (
-		charset    = r.Charset()
-		reader     = r.reader()
-		password   = make([]byte, r.Length)
-		bufferSize = int(float64(r.Length) * 1.3)
+		charset     = r.Charset()
+		reader      = r.reader()
+		password    = make([]byte, r.Length)
+		randomBytes = make([]byte, r.Length)
+		maxByte     = byte(256 - (256 % len(charset)))
 	)
 
-	for i, j, randomBytes := 0, 0, []byte{}; i < r.Length; j++ {
-		if j%bufferSize == 0 {
-			randomBytes = xrand.BytesWithReader(bufferSize, reader)
+	_, err := io.ReadFull(reader, randomBytes)
+	if err != nil {
+		return ""
+	}
+
+	for i := 0; i < r.Length; i++ {
+		b := randomBytes[i]
+		if b >= maxByte {
+			continue
 		}
 
-		if idx := int(randomBytes[j%bufferSize] & _RandomIndexMask); idx < len(charset) {
-			password[i] = charset[idx]
-			i++
-		}
+		password[i] = charset[int(b)%len(charset)]
 	}
 
 	return xunsafe.BytesToString(password)
