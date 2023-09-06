@@ -8,5 +8,5 @@ const (
 	Name string = "acopw"
 
 	// Version is the version of the application.
-	Version string = "0.1.0"
+	Version string = "0.4.0"
 )
