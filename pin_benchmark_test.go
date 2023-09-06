@@ -14,6 +14,9 @@ func BenchmarkPIN_Generate(b *testing.B) {
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		_ = pin.Generate()
+		_, err := pin.Generate()
+		if err != nil {
+			b.Fatal(err)
+		}
 	}
 }

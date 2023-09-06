@@ -100,7 +100,10 @@ func addPinCommand(rootCmd *cobra.Command) {
 				Length: length,
 			}
 
-			pin := generator.Generate()
+			pin, err := generator.Generate()
+			if err != nil {
+				output.Error("Error generating PIN:", err)
+			}
 
 			output.Password(pin)
 		},

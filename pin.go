@@ -4,9 +4,13 @@ import (
 	"crypto/rand"
 	"io"
 
+	"git.sr.ht/~jamesponddotco/xstd-go/xerrors"
 	"git.sr.ht/~jamesponddotco/xstd-go/xstrings"
 	"git.sr.ht/~jamesponddotco/xstd-go/xunsafe"
 )
+
+// ErrRandomPIN is returned when a random PIN cannot be generated.
+const ErrRandomPIN xerrors.Error = "unable to generate random PIN"
 
 // DefaultPINLength is the default length of a PIN.
 const DefaultPINLength int = 6
@@ -22,7 +26,7 @@ type PIN struct {
 }
 
 // Generate generates a random PIN.
-func (p *PIN) Generate() string {
+func (p *PIN) Generate() (string, error) {
 	if p.Length < 1 {
 		p.Length = DefaultPINLength
 	}
@@ -37,7 +41,7 @@ func (p *PIN) Generate() string {
 
 	_, err := io.ReadFull(reader, randomBytes)
 	if err != nil {
-		return ""
+		return "", ErrRandomPIN
 	}
 
 	for i := 0; i < p.Length; i++ {
@@ -49,7 +53,7 @@ func (p *PIN) Generate() string {
 		pin[i] = charset[int(b)%len(charset)]
 	}
 
-	return xunsafe.BytesToString(pin)
+	return xunsafe.BytesToString(pin), nil
 }
 
 // reader returns the reader to use for generating the PIN.

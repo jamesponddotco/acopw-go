@@ -2,6 +2,7 @@ package acopw_test
 
 import (
 	"crypto/rand"
+	"errors"
 	"testing"
 
 	"git.sr.ht/~jamesponddotco/acopw-go"
@@ -11,9 +12,10 @@ func TestPIN_Generate(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		validate func(string) bool
-		pin      acopw.PIN
-		name     string
+		name        string
+		validate    func(string) bool
+		pin         acopw.PIN
+		expectedErr error
 	}{
 		{
 			name: "DefaultLength",
@@ -47,9 +49,7 @@ func TestPIN_Generate(t *testing.T) {
 			pin: acopw.PIN{
 				Rand: &failingReader{},
 			},
-			validate: func(generated string) bool {
-				return generated == ""
-			},
+			expectedErr: acopw.ErrRandomPIN,
 		},
 	}
 
@@ -59,7 +59,15 @@ func TestPIN_Generate(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			got := tt.pin.Generate()
+			got, err := tt.pin.Generate()
+			if !errors.Is(err, tt.expectedErr) {
+				t.Fatalf("PIN.Generate() = %v, want %v", err, tt.expectedErr)
+			}
+
+			if tt.expectedErr != nil {
+				return
+			}
+
 			if !tt.validate(got) {
 				t.Errorf("PIN.Generate() = %v, validation failed", got)
 			}
@@ -76,7 +84,11 @@ func FuzzPINGenerate(f *testing.F) {
 			Length: in,
 		}
 
-		got := p.Generate()
+		got, err := p.Generate()
+		if err != nil {
+			t.Fatal(err)
+		}
+
 		if in > 0 && len(got) != in {
 			t.Errorf("PIN.Generate() = %v, want %v", got, in)
 		}
