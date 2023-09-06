@@ -5,9 +5,8 @@
 [![Coverage Report](https://img.shields.io/badge/coverage-100%25-brightgreen)](https://git.sr.ht/~jamesponddotco/acopw-go/tree/trunk/item/cover.out)
 [![builds.sr.ht status](https://builds.sr.ht/~jamesponddotco/acopw-go.svg)](https://builds.sr.ht/~jamesponddotco/acopw-go?)
 
-> **Note**: Neither this project nor the underlying cryptograhic
-> implementation have been independently audited. This project is a work
-> in progress.
+> **Note**: The underlying cryptographic implementation have not been
+> independently audited.
 
 Package `acopw` provides an easy-to-use, versatile and cryptographically
 secure way to generate cryptographically secure random passwords,
@@ -61,7 +60,10 @@ func main() {
 		UseSymbols: true,
 	}
 
-	password := random.Generate()
+	password, err := random.Generate()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	log.Println(password)
 }
@@ -87,7 +89,7 @@ func main() {
 		Capitalize: true,
 	}
 
-	password,err := diceware.Generate()
+	password, err := diceware.Generate()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -114,7 +116,10 @@ func main() {
 		Length: 6,
 	}
 
-	password := pin.Generate()
+	password, err := pin.Generate()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	log.Println(password)
 }
@@ -122,13 +127,19 @@ func main() {
 
 ## Contributing
 
-Anyone can help make `acopw` better. Check out [the contribution
-guidelines](https://git.sr.ht/~jamesponddotco/acopw-go/tree/master/item/CONTRIBUTING.md)
-for more information.
+Anyone can help make `acopw` better. Send patches on the [mailing
+list](https://lists.sr.ht/~jamesponddotco/acopw-devel) and report bugs
+on the [issue tracker](https://todo.sr.ht/~jamesponddotco/acopw).
+
+You must sign-off your work using `git commit --signoff`. Follow the
+[Linux kernel developer's certificate of
+origin](https://www.kernel.org/doc/html/latest/process/submitting-patches.html#sign-your-work-the-developer-s-certificate-of-origin)
+for more details.
+
+All contributions are made under [the MIT License](LICENSE.md).
 
 ## Credits
 
-- The algorithm used is based on something [András Belicza](https://github.com/icza) wrote on [Stack Overflow](https://stackoverflow.com/a/31832326), so credits goes to them.
 - Tests were mostly written using GPT-4.
 - Big thanks to the EFF for providing [some word lists](https://www.eff.org/dice), which were complimented by me crawling Wikipedia.
 
