@@ -114,7 +114,7 @@ func addPinCommand(rootCmd *cobra.Command) {
 	rootCmd.AddCommand(pinCmd)
 }
 
-func addRandomCommand(rootCmd *cobra.Command) {
+func addRandomCommand(rootCmd *cobra.Command) { //nolint:gocyclo // this entire CLI will be refactored at some point
 	randomCmd := &cobra.Command{
 		Use:   "random",
 		Short: "Generate a random password.",
