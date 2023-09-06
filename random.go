@@ -5,8 +5,17 @@ import (
 	"io"
 	"sync"
 
+	"git.sr.ht/~jamesponddotco/xstd-go/xerrors"
 	"git.sr.ht/~jamesponddotco/xstd-go/xstrings"
 	"git.sr.ht/~jamesponddotco/xstd-go/xunsafe"
+)
+
+const (
+	// ErrInvalidCharset is returned when the charset is invalid.
+	ErrInvalidCharset xerrors.Error = "no characters to build password in the charset"
+
+	// ErrRandomPassword is returned when a random password cannot be generated.
+	ErrRandomPassword xerrors.Error = "unable to generate random password"
 )
 
 const (
@@ -45,7 +54,7 @@ type Random struct {
 }
 
 // Generate generates a random password.
-func (r *Random) Generate() string {
+func (r *Random) Generate() (string, error) {
 	if r.Length < 1 {
 		r.Length = DefaultRandomLength
 	}
@@ -57,8 +66,12 @@ func (r *Random) Generate() string {
 		r.UseSymbols = true
 	}
 
+	charset := r.Charset()
+	if charset == "" {
+		return "", ErrInvalidCharset
+	}
+
 	var (
-		charset     = r.Charset()
 		reader      = r.reader()
 		password    = make([]byte, r.Length)
 		randomBytes = make([]byte, r.Length)
@@ -67,7 +80,7 @@ func (r *Random) Generate() string {
 
 	_, err := io.ReadFull(reader, randomBytes)
 	if err != nil {
-		return ""
+		return "", ErrRandomPassword
 	}
 
 	for i := 0; i < r.Length; i++ {
@@ -79,7 +92,7 @@ func (r *Random) Generate() string {
 		password[i] = charset[int(b)%len(charset)]
 	}
 
-	return xunsafe.BytesToString(password)
+	return xunsafe.BytesToString(password), nil
 }
 
 // Charset returns the character set to use for generating the password.

@@ -172,7 +172,10 @@ func addRandomCommand(rootCmd *cobra.Command) {
 				generator.ExcludedCharset = []string{excludeSet}
 			}
 
-			password := generator.Generate()
+			password, err := generator.Generate()
+			if err != nil {
+				output.Error("Error generating password:", err)
+			}
 
 			output.Password(password)
 		},

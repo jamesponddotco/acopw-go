@@ -18,9 +18,10 @@ func TestRandom_Generate(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		random   *acopw.Random
-		validate func(string) bool
-		name     string
+		name        string
+		random      *acopw.Random
+		validate    func(string) bool
+		expectedErr error
 	}{
 		{
 			name:   "DefaultConfiguration",
@@ -44,9 +45,14 @@ func TestRandom_Generate(t *testing.T) {
 			random: &acopw.Random{
 				Rand: &failingReader{},
 			},
-			validate: func(generated string) bool {
-				return generated == ""
+			expectedErr: acopw.ErrRandomPassword,
+		},
+		{
+			name: "InvalidCharset",
+			random: &acopw.Random{
+				ExcludedCharset: []string{acopw.Lowercase, acopw.Uppercase, acopw.Numbers, acopw.Symbols},
 			},
+			expectedErr: acopw.ErrInvalidCharset,
 		},
 	}
 
@@ -56,7 +62,15 @@ func TestRandom_Generate(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			got := tt.random.Generate()
+			got, err := tt.random.Generate()
+			if !errors.Is(err, tt.expectedErr) {
+				t.Fatalf("Random.Generate() = %v, want %v", got, tt.expectedErr)
+			}
+
+			if tt.expectedErr != nil {
+				return
+			}
+
 			if !tt.validate(got) {
 				t.Errorf("Random.Generate() = %v, validation failed", got)
 			}
@@ -73,7 +87,11 @@ func FuzzRandomGenerate(f *testing.F) {
 			Length: in,
 		}
 
-		got := r.Generate()
+		got, err := r.Generate()
+		if err != nil {
+			t.Fatal(err)
+		}
+
 		if in > 0 && len(got) != in {
 			t.Errorf("Random.Generate() = %v, want %v", got, in)
 		}
