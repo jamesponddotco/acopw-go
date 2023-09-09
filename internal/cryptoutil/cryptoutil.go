@@ -2,42 +2,38 @@
 package cryptoutil
 
 import (
-	"crypto/rand"
+	"encoding/binary"
 	"fmt"
 	"io"
-	"math/big"
 
 	"git.sr.ht/~jamesponddotco/xstd-go/xerrors"
 )
 
-// ErrInvalidLength is returned when the length of the input is not valid.
-const ErrInvalidLength xerrors.Error = "invalid length; must be >= 1"
+// ErrDivisionByZero is returned when a division by zero is attempted.
+const ErrDivisionByZero xerrors.Error = "division by zero; input must be greater than zero"
 
-// Int returns a uniform random value in [0, max). It works like rand.Int, but
-// take a max parameter integer instead of a *big.Int.
-func Int(reader io.Reader, max int) (int, error) {
-	if max < 1 {
-		return 0, fmt.Errorf("%w: %d", ErrInvalidLength, max)
+// RandomIndex generates a cryptographically secure random index in the range
+// [0, n-1]. It tries to eliminate bias by discarding values that would cause
+// bias due to the modulo operation.
+func RandomIndex(n int, randReader io.Reader) (int, error) {
+	if n <= 0 {
+		return 0, ErrDivisionByZero
 	}
 
-	result, err := rand.Int(reader, big.NewInt(int64(max)))
-	if err != nil {
-		return 0, fmt.Errorf("failed to generate random number: %w", err)
+	var (
+		max       = ^uint32(0) // Max value for uint32
+		threshold = max - (max % uint32(n))
+	)
+
+	for {
+		var r uint32
+
+		if err := binary.Read(randReader, binary.LittleEndian, &r); err != nil {
+			return 0, fmt.Errorf("%w", err)
+		}
+
+		if r < threshold {
+			return int(r % uint32(n)), nil
+		}
 	}
-
-	return int(result.Int64()), nil
-}
-
-// RandomElement returns a random element from the given string slice.
-func RandomElement(reader io.Reader, elements []string) (string, error) {
-	if len(elements) < 1 {
-		return "", fmt.Errorf("%w: %d", ErrInvalidLength, len(elements))
-	}
-
-	index, err := Int(reader, len(elements))
-	if err != nil {
-		return "", fmt.Errorf("%w", err)
-	}
-
-	return elements[index], nil
 }

@@ -12,13 +12,8 @@ import (
 	"git.sr.ht/~jamesponddotco/xstd-go/xstrings"
 )
 
-const (
-	// ErrDicewarePassword is returned when a diceware password cannot be generated.
-	ErrDicewarePassword xerrors.Error = "failed to generate diceware password"
-
-	// ErrWordPool is returned when words cannot be retrieved from the pool.
-	ErrWordPool xerrors.Error = "failed to get words from pool"
-)
+// ErrDicewarePassword is returned when a diceware password cannot be generated.
+const ErrDicewarePassword xerrors.Error = "failed to generate diceware password"
 
 //go:embed words/word-list.txt
 var _wordsData string
@@ -54,19 +49,25 @@ func (d *Diceware) Generate() (string, error) {
 		d.Length = DefaultDicewareLength
 	}
 
-	var err error
+	var (
+		index  int
+		err    error
+		reader = d.reader()
+	)
 
 	if d.Separator == "" {
-		d.Separator, err = cryptoutil.RandomElement(d.reader(), _separators)
+		index, err = cryptoutil.RandomIndex(len(_separators), reader)
 		if err != nil {
 			return "", fmt.Errorf("%w: %w", ErrDicewarePassword, err)
 		}
+
+		d.Separator = _separators[index]
 	}
 
 	capitalizeIndex := -1
 
 	if d.Capitalize {
-		capitalizeIndex, err = cryptoutil.Int(d.reader(), d.Length)
+		capitalizeIndex, err = cryptoutil.RandomIndex(d.Length, reader)
 		if err != nil {
 			return "", fmt.Errorf("%w: %w", ErrDicewarePassword, err)
 		}
@@ -75,16 +76,20 @@ func (d *Diceware) Generate() (string, error) {
 	words := make([]string, 0, d.Length)
 
 	for i := 0; i < d.Length; i++ {
-		element, err := cryptoutil.RandomElement(d.reader(), _words)
+		var index int
+
+		index, err = cryptoutil.RandomIndex(len(_words), reader)
 		if err != nil {
 			return "", fmt.Errorf("%w: %w", ErrDicewarePassword, err)
 		}
 
+		word := _words[index]
+
 		if i == capitalizeIndex {
-			element = strings.ToUpper(element)
+			word = strings.ToUpper(word)
 		}
 
-		words = append(words, element)
+		words = append(words, word)
 	}
 
 	return xstrings.JoinWithSeparator(d.Separator, words...), nil

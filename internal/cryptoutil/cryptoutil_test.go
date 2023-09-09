@@ -9,92 +9,68 @@ import (
 	"git.sr.ht/~jamesponddotco/acopw-go/internal/cryptoutil"
 )
 
-type errorReader struct{}
-
-func (*errorReader) Read(_ []byte) (int, error) {
-	return 0, errors.New("read error")
-}
-
-func TestInt(t *testing.T) {
-	t.Parallel()
-
+func TestRandomIndex(t *testing.T) {
 	tests := []struct {
-		name    string
-		reader  io.Reader
-		max     int
-		wantErr bool
+		name       string
+		n          int
+		input      []byte
+		expected   int
+		expectErr  bool
+		errMessage error
 	}{
 		{
-			name:    "invalid length",
-			reader:  nil,
-			max:     0,
-			wantErr: true,
+			name:      "ValidRandomIndex",
+			n:         10,
+			input:     []byte{0x04, 0x00, 0x00, 0x00},
+			expected:  4,
+			expectErr: false,
 		},
 		{
-			name:    "valid random number",
-			reader:  bytes.NewReader([]byte{0, 1, 2, 3}),
-			max:     4,
-			wantErr: false,
+			name:      "ExceedsThreshold",
+			n:         10,
+			input:     append([]byte{0xFF, 0xFF, 0xFF, 0xFF}, 0x04, 0x00, 0x00, 0x00),
+			expectErr: false,
 		},
 		{
-			name:    "rand.Int error",
-			reader:  &errorReader{},
-			max:     4,
-			wantErr: true,
+			name:       "InvalidRandReader",
+			n:          10,
+			input:      []byte{0x01},
+			expectErr:  true,
+			errMessage: io.ErrUnexpectedEOF,
+		},
+		{
+			name:       "ZeroValueN",
+			n:          0,
+			input:      []byte{0x01, 0x00, 0x00, 0x00},
+			expectErr:  true,
+			errMessage: cryptoutil.ErrDivisionByZero,
 		},
 	}
 
 	for _, tt := range tests {
-		tt := tt
-
 		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-
-			_, err := cryptoutil.Int(tt.reader, tt.max)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("Int() error = %v, wantErr %v", err, tt.wantErr)
+			randReader := bytes.NewReader(tt.input)
+			index, err := cryptoutil.RandomIndex(tt.n, randReader)
+			if tt.expectErr {
+				if err == nil {
+					t.Fatalf("expected error, got nil")
+				}
+				if !errors.Is(err, tt.errMessage) {
+					t.Fatalf("expected error %v, got %v", tt.errMessage, err)
+				}
+				return
 			}
-		})
-	}
-}
-
-func TestRandomElement(t *testing.T) {
-	t.Parallel()
-
-	tests := []struct {
-		name     string
-		reader   io.Reader
-		elements []string
-		wantErr  bool
-	}{
-		{
-			name:     "invalid length",
-			reader:   nil,
-			elements: []string{},
-			wantErr:  true,
-		},
-		{
-			name:     "valid random element",
-			reader:   bytes.NewReader([]byte{0, 1, 2, 3}),
-			elements: []string{"apple", "banana", "cherry"},
-			wantErr:  false,
-		},
-		{
-			name:     "rand.Int error",
-			reader:   &errorReader{},
-			elements: []string{"apple", "banana", "cherry"},
-			wantErr:  true,
-		},
-	}
-
-	for _, tt := range tests {
-		tt := tt
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-
-			_, err := cryptoutil.RandomElement(tt.reader, tt.elements)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("RandomElement() error = %v, wantErr %v", err, tt.wantErr)
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+			if tt.name == "ExceedsThreshold" {
+				if index < 0 || index >= tt.n {
+					t.Fatalf("index out of valid range [0, %d), got %d", tt.n, index)
+				}
+			} else {
+				if index != tt.expected {
+					t.Fatalf("expected %d, got %d", tt.expected, index)
+				}
 			}
 		})
 	}
