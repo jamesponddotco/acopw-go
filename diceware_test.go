@@ -109,6 +109,26 @@ func TestDiceware_Generate(t *testing.T) {
 				return err != nil
 			},
 		},
+		{
+			name: "CustomSeparator",
+			diceware: &acopw.Diceware{
+				Separator: "-",
+			},
+			validate: func(generated string, err error) bool {
+				return err == nil && strings.Contains(generated, "-")
+			},
+		},
+		{
+			name: "NilReader",
+			diceware: &acopw.Diceware{
+				Rand:      nil,
+				Separator: " ",
+				Length:    4,
+			},
+			validate: func(generated string, err error) bool {
+				return err == nil && len(strings.Split(generated, " ")) == 4
+			},
+		},
 	}
 
 	for _, tt := range tests {
