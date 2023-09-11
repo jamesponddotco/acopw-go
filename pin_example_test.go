@@ -12,8 +12,13 @@ func ExamplePIN_Generate() {
 		Length: 6, // Generate a 6 digit PIN.
 	}
 
-	// Generate a random PIN.
-	log.Print(pin.Generate())
+	// Generate a PIN.
+	generated, err := pin.Generate()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Print(generated)
 	// Output:
 	//
 }
