@@ -3,6 +3,7 @@ package acopw_test
 import (
 	"crypto/rand"
 	"errors"
+	"strings"
 	"testing"
 
 	"git.sr.ht/~jamesponddotco/acopw-go"
@@ -53,6 +54,49 @@ func TestRandom_Generate(t *testing.T) {
 				ExcludedCharset: []string{acopw.Lowercase, acopw.Uppercase, acopw.Numbers, acopw.Symbols},
 			},
 			expectedErr: acopw.ErrInvalidCharset,
+		},
+		{
+			name: "CharsetExclusions",
+			random: &acopw.Random{
+				ExcludedCharset: []string{"a", "1", "@"},
+			},
+			validate: func(generated string) bool {
+				return !strings.ContainsAny(generated, "a1@")
+			},
+		},
+		{
+			name: "ZeroLength",
+			random: &acopw.Random{
+				Rand:   rand.Reader,
+				Length: 0,
+			},
+			validate: func(generated string) bool {
+				return len(generated) == acopw.DefaultRandomLength
+			},
+		},
+		{
+			name: "UseLowerOnly",
+			random: &acopw.Random{
+				UseLower:   true,
+				UseUpper:   false,
+				UseNumbers: false,
+				UseSymbols: false,
+			},
+			validate: func(generated string) bool {
+				return strings.ToLower(generated) == generated
+			},
+		},
+		{
+			name: "UseUpperOnly",
+			random: &acopw.Random{
+				UseLower:   false,
+				UseUpper:   true,
+				UseNumbers: false,
+				UseSymbols: false,
+			},
+			validate: func(generated string) bool {
+				return strings.ToUpper(generated) == generated
+			},
 		},
 	}
 
