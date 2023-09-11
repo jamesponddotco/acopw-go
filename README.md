@@ -5,12 +5,12 @@
 [![Coverage Report](https://img.shields.io/badge/coverage-100%25-brightgreen)](https://git.sr.ht/~jamesponddotco/acopw-go/tree/trunk/item/cover.out)
 [![builds.sr.ht status](https://builds.sr.ht/~jamesponddotco/acopw-go.svg)](https://builds.sr.ht/~jamesponddotco/acopw-go?)
 
-> **Note**: The underlying cryptographic implementation have not been
+> **Note**: The underlying cryptographic implementations have not been
 > independently audited.
 
-Package `acopw` provides an easy-to-use, versatile and cryptographically
+Package `acopw` provides an easy-to-use, fast, and cryptographically
 secure way to generate cryptographically secure random passwords,
-passphrases, and PINs.
+passphrases, PINs, and UUIDs.
 
 **Samples for what this package may generate:**
 
@@ -21,9 +21,14 @@ u{AQTrcOcHG#/.K>j{?P=\=jm%O>)hC;.Y%l,~fE'v];^@AY!?I}=DzyKlE@GEKb
 996388
 hefty_spacetime_ENVELOPE_hearing_trend_fossils_unusable
 deplored-desert-victory-runtime-coupland-costly-CLASSICS
+030ed192-7d63-49b4-b0d4-cc9e11373df5
+d77b2d10-869a-4a85-b225-19d641f38139
 ```
 
-The packages uses [crypto/rand](https://godocs.io/crypto/rand) and a list with **over 23 thousand** words for added randomness.
+The packages uses [crypto/rand](https://godocs.io/crypto/rand) by
+default for generating random data. When generating diceware passwords,
+it uses a [curated list with **over 23 thousand
+words**](https://git.sr.ht/~jamesponddotco/acopw-go/blob/trunk/words/word-list.txt).
 
 ## Installation
 
