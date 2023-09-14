@@ -2,6 +2,7 @@ package acopw
 
 import (
 	"crypto/rand"
+	"fmt"
 	"io"
 
 	"git.sr.ht/~jamesponddotco/xstd-go/xerrors"
@@ -41,7 +42,7 @@ func (p *PIN) Generate() (string, error) {
 
 	_, err := io.ReadFull(reader, randomBytes)
 	if err != nil {
-		return "", ErrRandomPIN
+		return "", fmt.Errorf("%w: %w", ErrRandomPIN, err)
 	}
 
 	for i := 0; i < p.Length; i++ {
@@ -49,7 +50,7 @@ func (p *PIN) Generate() (string, error) {
 		if b >= maxByte {
 			_, err := io.ReadFull(reader, randomBytes[i:i+1])
 			if err != nil {
-				return "", ErrRandomPIN
+				return "", fmt.Errorf("%w: %w", ErrRandomPIN, err)
 			}
 
 			b = randomBytes[i]

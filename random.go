@@ -2,6 +2,7 @@ package acopw
 
 import (
 	"crypto/rand"
+	"fmt"
 	"io"
 	"sync"
 
@@ -80,7 +81,7 @@ func (r *Random) Generate() (string, error) {
 
 	_, err := io.ReadFull(reader, randomBytes)
 	if err != nil {
-		return "", ErrRandomPassword
+		return "", fmt.Errorf("%w: %w", ErrRandomPassword, err)
 	}
 
 	for i := 0; i < r.Length; i++ {
@@ -89,7 +90,7 @@ func (r *Random) Generate() (string, error) {
 		for b >= maxByte {
 			_, err := io.ReadFull(reader, randomBytes[i:i+1])
 			if err != nil {
-				return "", ErrRandomPassword
+				return "", fmt.Errorf("%w: %w", ErrRandomPassword, err)
 			}
 
 			b = randomBytes[i]
