@@ -2,7 +2,7 @@
 
 [![Go Documentation](https://godocs.io/git.sr.ht/~jamesponddotco/acopw-go?status.svg)](https://godocs.io/git.sr.ht/~jamesponddotco/acopw-go)
 [![Go Report Card](https://goreportcard.com/badge/git.sr.ht/~jamesponddotco/acopw-go)](https://goreportcard.com/report/git.sr.ht/~jamesponddotco/acopw-go)
-[![Coverage Report](https://img.shields.io/badge/coverage-100%25-brightgreen)](https://git.sr.ht/~jamesponddotco/acopw-go/tree/trunk/item/cover.out)
+[![Coverage Report](https://img.shields.io/badge/coverage-98%25-brightgreen)](https://git.sr.ht/~jamesponddotco/acopw-go/tree/trunk/item/cover.out)
 [![builds.sr.ht status](https://builds.sr.ht/~jamesponddotco/acopw-go.svg)](https://builds.sr.ht/~jamesponddotco/acopw-go?)
 
 > **Note**: The underlying cryptographic implementations have not been

@@ -47,7 +47,12 @@ func (p *PIN) Generate() (string, error) {
 	for i := 0; i < p.Length; i++ {
 		b := randomBytes[i]
 		if b >= maxByte {
-			continue
+			_, err := io.ReadFull(reader, randomBytes[i:i+1])
+			if err != nil {
+				return "", ErrRandomPIN
+			}
+
+			b = randomBytes[i]
 		}
 
 		pin[i] = charset[int(b)%len(charset)]

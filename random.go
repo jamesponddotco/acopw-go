@@ -85,8 +85,14 @@ func (r *Random) Generate() (string, error) {
 
 	for i := 0; i < r.Length; i++ {
 		b := randomBytes[i]
-		if b >= maxByte {
-			continue
+
+		for b >= maxByte {
+			_, err := io.ReadFull(reader, randomBytes[i:i+1])
+			if err != nil {
+				return "", ErrRandomPassword
+			}
+
+			b = randomBytes[i]
 		}
 
 		password[i] = charset[int(b)%len(charset)]
