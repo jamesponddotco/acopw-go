@@ -51,6 +51,14 @@ func TestPIN_Generate(t *testing.T) {
 			},
 			expectedErr: acopw.ErrRandomPIN,
 		},
+		{
+			name: "SecondFailingReader",
+			pin: acopw.PIN{
+				Rand:   &secondFailingReader{},
+				Length: acopw.DefaultRandomLength,
+			},
+			expectedErr: acopw.ErrRandomPIN,
+		},
 	}
 
 	for _, tt := range tests {

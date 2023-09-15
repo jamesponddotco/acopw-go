@@ -15,6 +15,20 @@ func (*failingReader) Read(_ []byte) (n int, err error) {
 	return 0, errors.New("forced read failure")
 }
 
+type secondFailingReader struct {
+	readCount int
+}
+
+func (r *secondFailingReader) Read(p []byte) (n int, err error) {
+	if r.readCount == 0 {
+		r.readCount++
+
+		return rand.Reader.Read(p)
+	}
+
+	return 0, errors.New("forced read failure on second call")
+}
+
 func TestRandom_Generate(t *testing.T) {
 	t.Parallel()
 
@@ -49,6 +63,14 @@ func TestRandom_Generate(t *testing.T) {
 			expectedErr: acopw.ErrRandomPassword,
 		},
 		{
+			name: "SecondFailingReader",
+			random: &acopw.Random{
+				Rand:   &secondFailingReader{},
+				Length: acopw.DefaultRandomLength,
+			},
+			expectedErr: acopw.ErrRandomPassword,
+		},
+		{
 			name: "InvalidCharset",
 			random: &acopw.Random{
 				ExcludedCharset: []string{acopw.Lowercase, acopw.Uppercase, acopw.Numbers, acopw.Symbols},
@@ -75,6 +97,24 @@ func TestRandom_Generate(t *testing.T) {
 			},
 		},
 		{
+			name: "HighLength",
+			random: &acopw.Random{
+				Length: 1024,
+			},
+			validate: func(generated string) bool {
+				return len(generated) == 1024
+			},
+		},
+		{
+			name: "LowLength",
+			random: &acopw.Random{
+				Length: 1,
+			},
+			validate: func(generated string) bool {
+				return len(generated) == 1
+			},
+		},
+		{
 			name: "UseLowerOnly",
 			random: &acopw.Random{
 				UseLower:   true,
@@ -96,6 +136,51 @@ func TestRandom_Generate(t *testing.T) {
 			},
 			validate: func(generated string) bool {
 				return strings.ToUpper(generated) == generated
+			},
+		},
+		{
+			name: "UseNumbersOnly",
+			random: &acopw.Random{
+				UseLower:   false,
+				UseUpper:   false,
+				UseNumbers: true,
+				UseSymbols: false,
+			},
+			validate: func(generated string) bool {
+				for _, char := range generated {
+					if !strings.ContainsRune(acopw.Numbers, char) {
+						return false
+					}
+				}
+
+				return true
+			},
+		},
+		{
+			name: "UseSymbolsOnly",
+			random: &acopw.Random{
+				UseLower:   false,
+				UseUpper:   false,
+				UseNumbers: false,
+				UseSymbols: true,
+			},
+			validate: func(generated string) bool {
+				for _, char := range generated {
+					if !strings.ContainsRune(acopw.Symbols, char) {
+						return false
+					}
+				}
+
+				return true
+			},
+		},
+		{
+			name: "ExcludeCharacter",
+			random: &acopw.Random{
+				ExcludedCharset: []string{"z"},
+			},
+			validate: func(generated string) bool {
+				return !strings.Contains(generated, "z")
 			},
 		},
 	}
