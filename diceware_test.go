@@ -18,6 +18,8 @@ func (*errorReader) Read(_ []byte) (int, error) {
 func TestDiceware_Generate(t *testing.T) {
 	t.Parallel()
 
+	customWordList := []string{"custom", "word", "list"}
+
 	tests := []struct {
 		validate func(string, error) bool
 		name     string
@@ -127,6 +129,32 @@ func TestDiceware_Generate(t *testing.T) {
 			},
 			validate: func(generated string, err error) bool {
 				return err == nil && len(strings.Split(generated, " ")) == 4
+			},
+		},
+		{
+			name: "CustomWordList",
+			diceware: &acopw.Diceware{
+				Words:     customWordList,
+				Length:    3,
+				Separator: " ",
+			},
+			validate: func(generated string, err error) bool {
+				if err != nil {
+					return false
+				}
+
+				customWords := make(map[string]bool)
+				for _, w := range customWordList {
+					customWords[w] = true
+				}
+
+				for _, word := range strings.Split(generated, " ") {
+					if !customWords[word] {
+						return false
+					}
+				}
+
+				return true
 			},
 		},
 	}

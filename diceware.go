@@ -36,6 +36,10 @@ type Diceware struct {
 	// Separator is the string used to separate words in the password.
 	Separator string
 
+	// Words is the list of words used to generate the password. If the list is
+	// empty, the default word list is used.
+	Words []string
+
 	// Length is the number of words in the password.
 	Length int
 
@@ -50,10 +54,15 @@ func (d *Diceware) Generate() (string, error) {
 	}
 
 	var (
-		index  int
-		err    error
-		reader = d.reader()
+		index    int
+		err      error
+		reader   = d.reader()
+		wordList = d.Words
 	)
+
+	if len(wordList) == 0 {
+		wordList = _words
+	}
 
 	if d.Separator == "" {
 		index, err = cryptoutil.RandomIndex(len(_separators), reader)
@@ -78,12 +87,12 @@ func (d *Diceware) Generate() (string, error) {
 	for i := 0; i < d.Length; i++ {
 		var index int
 
-		index, err = cryptoutil.RandomIndex(len(_words), reader)
+		index, err = cryptoutil.RandomIndex(len(wordList), reader)
 		if err != nil {
 			return "", fmt.Errorf("%w: %w", ErrDicewarePassword, err)
 		}
 
-		word := _words[index]
+		word := wordList[index]
 
 		if i == capitalizeIndex {
 			word = strings.ToUpper(word)
