@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"errors"
 	"strings"
+	"sync"
 	"testing"
 
 	"git.sr.ht/~jamesponddotco/acopw-go"
@@ -17,9 +18,13 @@ func (*failingReader) Read(_ []byte) (n int, err error) {
 
 type secondFailingReader struct {
 	readCount int
+	mu        sync.Mutex
 }
 
 func (r *secondFailingReader) Read(p []byte) (n int, err error) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
 	if r.readCount == 0 {
 		r.readCount++
 
