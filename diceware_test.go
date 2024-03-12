@@ -85,7 +85,7 @@ func TestDiceware_Generate(t *testing.T) {
 			diceware: &acopw.Diceware{
 				Rand: &errorReader{},
 			},
-			validate: func(generated string, err error) bool {
+			validate: func(_ string, err error) bool {
 				return err != nil
 			},
 		},
@@ -97,7 +97,7 @@ func TestDiceware_Generate(t *testing.T) {
 				Length:     5,
 				Capitalize: true,
 			},
-			validate: func(generated string, err error) bool {
+			validate: func(_ string, err error) bool {
 				return err != nil
 			},
 		},
@@ -107,7 +107,7 @@ func TestDiceware_Generate(t *testing.T) {
 				Rand:      &errorReader{},
 				Separator: " ",
 			},
-			validate: func(generated string, err error) bool {
+			validate: func(_ string, err error) bool {
 				return err != nil
 			},
 		},
