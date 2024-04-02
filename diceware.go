@@ -4,7 +4,6 @@ import (
 	"crypto/rand"
 	_ "embed"
 	"fmt"
-	"io"
 	"strings"
 
 	"git.sr.ht/~jamesponddotco/acopw-go/internal/cryptoutil"
@@ -28,11 +27,6 @@ const DefaultDicewareLength int = 8
 
 // Diceware contains configuration options for generating a diceware password.
 type Diceware struct {
-	// Rand provides the source of entropy for generating the diceware
-	// password. If Rand is nil, the cryptographic random reader in package
-	// crypto/rand is used.
-	Rand io.Reader
-
 	// Separator is the string used to separate words in the password.
 	Separator string
 
@@ -56,7 +50,7 @@ func (d *Diceware) Generate() (string, error) {
 	var (
 		index    int
 		err      error
-		reader   = d.reader()
+		reader   = rand.Reader
 		wordList = d.Words
 	)
 
@@ -102,13 +96,4 @@ func (d *Diceware) Generate() (string, error) {
 	}
 
 	return xstrings.JoinWithSeparator(d.Separator, words...), nil
-}
-
-// reader returns the reader to use for generating the diceware password.
-func (d *Diceware) reader() io.Reader {
-	if d.Rand != nil {
-		return d.Rand
-	}
-
-	return rand.Reader
 }

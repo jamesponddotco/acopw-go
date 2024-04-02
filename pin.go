@@ -18,10 +18,6 @@ const DefaultPINLength int = 6
 
 // PIN contains configuration options for generating PIN pins.
 type PIN struct {
-	// Rand provides the source of entropy for generating the PIN. If Rand is
-	// nil, the cryptographic random reader in package crypto/rand is used.
-	Rand io.Reader
-
 	// Length is the length of the generated PIN.
 	Length int
 }
@@ -34,7 +30,7 @@ func (p *PIN) Generate() (string, error) {
 
 	var (
 		charset     = xstrings.Numbers
-		reader      = p.reader()
+		reader      = rand.Reader
 		pin         = make([]byte, p.Length)
 		randomBytes = make([]byte, p.Length)
 		maxByte     = byte(256 - (256 % len(charset)))
@@ -60,13 +56,4 @@ func (p *PIN) Generate() (string, error) {
 	}
 
 	return xunsafe.BytesToString(pin), nil
-}
-
-// reader returns the reader to use for generating the PIN.
-func (p *PIN) reader() io.Reader {
-	if p.Rand != nil {
-		return p.Rand
-	}
-
-	return rand.Reader
 }

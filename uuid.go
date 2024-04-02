@@ -22,17 +22,13 @@ const (
 //
 // [RFC 4122]: https://tools.ietf.org/html/rfc4122
 type UUID struct {
-	// Rand provides the source of entropy for generating the UUID. If Rand
-	// is nil, the cryptographic random reader in package crypto/rand is used.
-	Rand io.Reader
-
 	// bytes is a byte slice of length 16 that is used as a buffer for the UUID.
 	bytes [16]byte
 }
 
 // Generate generates a random UUIDv4.
 func (u *UUID) Generate() (string, error) {
-	if _, err := io.ReadFull(u.reader(), u.bytes[:]); err != nil {
+	if _, err := io.ReadFull(rand.Reader, u.bytes[:]); err != nil {
 		return "", fmt.Errorf("%w", err)
 	}
 
@@ -50,13 +46,4 @@ func (u *UUID) Generate() (string, error) {
 	}
 
 	return xunsafe.BytesToString(buf), nil
-}
-
-// reader returns the source of entropy for generating the UUID.
-func (u *UUID) reader() io.Reader {
-	if u.Rand != nil {
-		return u.Rand
-	}
-
-	return rand.Reader
 }

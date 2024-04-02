@@ -34,10 +34,6 @@ type Random struct {
 	// Charset is the character set to use for generating the password.
 	charset string
 
-	// Rand provides the source of entropy for generating the password. If Rand
-	// is nil, the cryptographic random reader in package crypto/rand is used.
-	Rand io.Reader
-
 	// ExcludedCharset is a list of characters that should not be used in the password.
 	ExcludedCharset []string
 
@@ -73,7 +69,7 @@ func (r *Random) Generate() (string, error) {
 	}
 
 	var (
-		reader      = r.reader()
+		reader      = rand.Reader
 		password    = make([]byte, r.Length)
 		randomBytes = make([]byte, r.Length)
 		maxByte     = byte(256 - (256 % len(charset)))
@@ -133,13 +129,4 @@ func (r *Random) Charset() string {
 	})
 
 	return r.charset
-}
-
-// reader returns the source of entropy for generating the password.
-func (r *Random) reader() io.Reader {
-	if r.Rand != nil {
-		return r.Rand
-	}
-
-	return rand.Reader
 }
