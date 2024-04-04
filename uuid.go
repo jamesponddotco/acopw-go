@@ -2,7 +2,6 @@ package acopw
 
 import (
 	"crypto/rand"
-	"fmt"
 	"io"
 
 	"git.sr.ht/~jamesponddotco/xstd-go/xunsafe"
@@ -27,9 +26,9 @@ type UUID struct {
 }
 
 // Generate generates a random UUIDv4.
-func (u *UUID) Generate() (string, error) {
+func (u *UUID) Generate() string {
 	if _, err := io.ReadFull(rand.Reader, u.bytes[:]); err != nil {
-		return "", fmt.Errorf("%w", err)
+		panic(err)
 	}
 
 	u.bytes[6] = (u.bytes[6] & 0x0f) | 0x40
@@ -45,5 +44,5 @@ func (u *UUID) Generate() (string, error) {
 		buf = append(buf, _hexDigits[u.bytes[i]>>4], _hexDigits[u.bytes[i]&0x0f])
 	}
 
-	return xunsafe.BytesToString(buf), nil
+	return xunsafe.BytesToString(buf)
 }

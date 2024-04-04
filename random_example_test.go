@@ -19,13 +19,8 @@ func ExampleRandom_Generate() {
 		UseSymbols: true, // Use symbols
 	}
 
-	// Generate a random password.
-	generated, err := password.Generate()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	log.Print(generated)
+	// Generate and print a random password.
+	log.Print(password.Generate())
 	// Output:
 	//
 }

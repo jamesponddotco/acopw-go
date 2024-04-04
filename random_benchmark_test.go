@@ -21,9 +21,6 @@ func BenchmarkRandom_Generate(b *testing.B) {
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		_, err := password.Generate()
-		if err != nil {
-			b.Fatal(err)
-		}
+		_ = password.Generate()
 	}
 }

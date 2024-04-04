@@ -2,7 +2,6 @@ package acopw
 
 import (
 	"crypto/rand"
-	"fmt"
 	"io"
 	"sync"
 
@@ -11,13 +10,8 @@ import (
 	"git.sr.ht/~jamesponddotco/xstd-go/xunsafe"
 )
 
-const (
-	// ErrInvalidCharset is returned when the charset is invalid.
-	ErrInvalidCharset xerrors.Error = "no characters to build password in the charset"
-
-	// ErrRandomPassword is returned when a random password cannot be generated.
-	ErrRandomPassword xerrors.Error = "unable to generate random password"
-)
+// ErrInvalidCharset is returned when the charset is invalid.
+const ErrInvalidCharset xerrors.Error = "no characters to build password in the charset"
 
 const (
 	Lowercase = xstrings.LowercaseLetters
@@ -51,7 +45,7 @@ type Random struct {
 }
 
 // Generate generates a random password.
-func (r *Random) Generate() (string, error) {
+func (r *Random) Generate() string {
 	if r.Length < 1 {
 		r.Length = DefaultRandomLength
 	}
@@ -65,7 +59,7 @@ func (r *Random) Generate() (string, error) {
 
 	charset := r.Charset()
 	if charset == "" {
-		return "", ErrInvalidCharset
+		panic(ErrInvalidCharset)
 	}
 
 	var (
@@ -75,18 +69,16 @@ func (r *Random) Generate() (string, error) {
 		maxByte     = byte(256 - (256 % len(charset)))
 	)
 
-	_, err := io.ReadFull(reader, randomBytes)
-	if err != nil {
-		return "", fmt.Errorf("%w: %w", ErrRandomPassword, err)
+	if _, err := io.ReadFull(reader, randomBytes); err != nil {
+		panic(err)
 	}
 
 	for i := 0; i < r.Length; i++ {
 		b := randomBytes[i]
 
 		for b >= maxByte {
-			_, err := io.ReadFull(reader, randomBytes[i:i+1])
-			if err != nil {
-				return "", fmt.Errorf("%w: %w", ErrRandomPassword, err)
+			if _, err := io.ReadFull(reader, randomBytes[i:i+1]); err != nil {
+				panic(err)
 			}
 
 			b = randomBytes[i]
@@ -95,7 +87,7 @@ func (r *Random) Generate() (string, error) {
 		password[i] = charset[int(b)%len(charset)]
 	}
 
-	return xunsafe.BytesToString(password), nil
+	return xunsafe.BytesToString(password)
 }
 
 // Charset returns the character set to use for generating the password.

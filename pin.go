@@ -2,7 +2,6 @@ package acopw
 
 import (
 	"crypto/rand"
-	"fmt"
 	"io"
 
 	"git.sr.ht/~jamesponddotco/xstd-go/xerrors"
@@ -23,7 +22,7 @@ type PIN struct {
 }
 
 // Generate generates a random PIN.
-func (p *PIN) Generate() (string, error) {
+func (p *PIN) Generate() string {
 	if p.Length < 1 {
 		p.Length = DefaultPINLength
 	}
@@ -36,17 +35,15 @@ func (p *PIN) Generate() (string, error) {
 		maxByte     = byte(256 - (256 % len(charset)))
 	)
 
-	_, err := io.ReadFull(reader, randomBytes)
-	if err != nil {
-		return "", fmt.Errorf("%w: %w", ErrRandomPIN, err)
+	if _, err := io.ReadFull(reader, randomBytes); err != nil {
+		panic(err)
 	}
 
 	for i := 0; i < p.Length; i++ {
 		b := randomBytes[i]
 		if b >= maxByte {
-			_, err := io.ReadFull(reader, randomBytes[i:i+1])
-			if err != nil {
-				return "", fmt.Errorf("%w: %w", ErrRandomPIN, err)
+			if _, err := io.ReadFull(reader, randomBytes[i:i+1]); err != nil {
+				panic(err)
 			}
 
 			b = randomBytes[i]
@@ -55,5 +52,5 @@ func (p *PIN) Generate() (string, error) {
 		pin[i] = charset[int(b)%len(charset)]
 	}
 
-	return xunsafe.BytesToString(pin), nil
+	return xunsafe.BytesToString(pin)
 }
