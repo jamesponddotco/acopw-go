@@ -55,9 +55,9 @@ import (
 
 func main() {
 	random := &acopw.Random{
-		Length: 16,
-		UseLower: true,
-		UseUpper: true,
+		Length:     16,
+		UseLower:   true,
+		UseUpper:   true,
 		UseNumbers: true,
 		UseSymbols: true,
 	}
@@ -81,8 +81,8 @@ import (
 
 func main() {
 	diceware := &acopw.Diceware{
-		Separator: "-",
-		Length: 6,
+		Separator:  "-",
+		Length:     6,
 		Capitalize: true,
 	}
 
