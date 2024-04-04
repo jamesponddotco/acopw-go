@@ -42,7 +42,7 @@ go get git.sr.ht/~jamesponddotco/acopw-go
 
 ### Random passwords
 
-To generate a random password, use the `Random` struct and call the `Generate()` method.
+To generate a random password, use `Random` and call the `Generate()` method.
 
 ```go
 package main
@@ -62,18 +62,13 @@ func main() {
 		UseSymbols: true,
 	}
 
-	password, err := random.Generate()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	log.Println(password)
+	log.Println(random.Generate())
 }
 ```
 
 ### Diceware passwords
 
-To generate a diceware password, use the `Diceware` struct and call the `Generate()` method.
+To generate a diceware password, use `Diceware` and call the `Generate()` method.
 
 ```go
 package main
@@ -91,18 +86,13 @@ func main() {
 		Capitalize: true,
 	}
 
-	password, err := diceware.Generate()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	log.Println(password)
+	log.Println(diceware.Generate())
 }
 ```
 
 ### PINs
 
-To generate a PIN, use the `PIN` struct and call the `Generate()` method.
+To generate a PIN, use `PIN` and call the `Generate()` method.
 
 ```go
 package main
@@ -118,12 +108,7 @@ func main() {
 		Length: 6,
 	}
 
-	password, err := pin.Generate()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	log.Println(password)
+	log.Println(pin.Generate())
 }
 ```
 
