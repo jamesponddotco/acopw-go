@@ -112,6 +112,26 @@ func main() {
 }
 ```
 
+### UUIDs
+
+To generate a UUID, use `UUID` and call the `Generate()` method.
+
+```go
+package main
+
+import (
+	"log"
+
+	"git.sr.ht/~jamesponddotco/acopw-go"
+)
+
+func main() {
+	var uuid acopw.UUID
+
+	log.Println(uuid.Generate())
+}
+```
+
 ## Contributing
 
 Anyone can help make `acopw` better. Send patches on the [mailing
