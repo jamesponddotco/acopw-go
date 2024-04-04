@@ -3,16 +3,12 @@ package acopw
 import (
 	"crypto/rand"
 	_ "embed"
-	"fmt"
+	"io"
+	mrand "math/rand/v2"
 	"strings"
 
-	"git.sr.ht/~jamesponddotco/acopw-go/internal/cryptoutil"
-	"git.sr.ht/~jamesponddotco/xstd-go/xerrors"
 	"git.sr.ht/~jamesponddotco/xstd-go/xstrings"
 )
-
-// ErrDicewarePassword is returned when a diceware password cannot be generated.
-const ErrDicewarePassword xerrors.Error = "failed to generate diceware password"
 
 //go:embed words/word-list.txt
 var _wordsData string
@@ -27,6 +23,9 @@ const DefaultDicewareLength int = 8
 
 // Diceware contains configuration options for generating a diceware password.
 type Diceware struct {
+	// random provides the source of entropy for generating the diceware password.
+	random *mrand.Rand
+
 	// Separator is the string used to separate words in the password.
 	Separator string
 
@@ -42,15 +41,23 @@ type Diceware struct {
 }
 
 // Generate generates a diceware password.
-func (d *Diceware) Generate() (string, error) {
+func (d *Diceware) Generate() string {
+	if d.random == nil {
+		var seed [32]byte
+
+		if _, err := io.ReadFull(rand.Reader, seed[:]); err != nil {
+			panic(err)
+		}
+
+		d.random = mrand.New(mrand.NewChaCha8(seed))
+	}
+
 	if d.Length < 1 {
 		d.Length = DefaultDicewareLength
 	}
 
 	var (
 		index    int
-		err      error
-		reader   = rand.Reader
 		wordList = d.Words
 	)
 
@@ -59,10 +66,7 @@ func (d *Diceware) Generate() (string, error) {
 	}
 
 	if d.Separator == "" {
-		index, err = cryptoutil.RandomIndex(len(_separators), reader)
-		if err != nil {
-			return "", fmt.Errorf("%w: %w", ErrDicewarePassword, err)
-		}
+		index = d.random.IntN(len(_separators))
 
 		d.Separator = _separators[index]
 	}
@@ -70,23 +74,16 @@ func (d *Diceware) Generate() (string, error) {
 	capitalizeIndex := -1
 
 	if d.Capitalize {
-		capitalizeIndex, err = cryptoutil.RandomIndex(d.Length, reader)
-		if err != nil {
-			return "", fmt.Errorf("%w: %w", ErrDicewarePassword, err)
-		}
+		capitalizeIndex = d.random.IntN(d.Length)
 	}
 
 	words := make([]string, 0, d.Length)
 
 	for i := 0; i < d.Length; i++ {
-		var index int
-
-		index, err = cryptoutil.RandomIndex(len(wordList), reader)
-		if err != nil {
-			return "", fmt.Errorf("%w: %w", ErrDicewarePassword, err)
-		}
-
-		word := wordList[index]
+		var (
+			index = d.random.IntN(len(wordList))
+			word  = wordList[index]
+		)
 
 		if i == capitalizeIndex {
 			word = strings.ToUpper(word)
@@ -95,5 +92,5 @@ func (d *Diceware) Generate() (string, error) {
 		words = append(words, word)
 	}
 
-	return xstrings.JoinWithSeparator(d.Separator, words...), nil
+	return xstrings.JoinWithSeparator(d.Separator, words...)
 }

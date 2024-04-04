@@ -13,13 +13,7 @@ func ExampleDiceware_Generate() {
 		Capitalize: true, // Capitalize the first letter of a random word.
 	}
 
-	// Generate a password.
-	pass, err := password.Generate()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Print the password.
-	log.Print(pass)
+	// Generate and print a random diceware password.
+	log.Print(password.Generate())
 	// Output:
 }
