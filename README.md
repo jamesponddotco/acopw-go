@@ -147,7 +147,7 @@ All contributions are made under [the MIT License](LICENSE.md).
 
 ## Credits
 
-- Tests were mostly written using GPT-4.
+- Tests were mostly written using a combination of Claude 3 and GPT-4.
 - Big thanks to the EFF for providing [some word lists](https://www.eff.org/dice), which were complimented by me crawling Wikipedia.
 
 ## Resources
