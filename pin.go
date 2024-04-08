@@ -4,13 +4,9 @@ import (
 	"crypto/rand"
 	"io"
 
-	"git.sr.ht/~jamesponddotco/xstd-go/xerrors"
 	"git.sr.ht/~jamesponddotco/xstd-go/xstrings"
 	"git.sr.ht/~jamesponddotco/xstd-go/xunsafe"
 )
-
-// ErrRandomPIN is returned when a random PIN cannot be generated.
-const ErrRandomPIN xerrors.Error = "unable to generate random PIN"
 
 // DefaultPINLength is the default length of a PIN.
 const DefaultPINLength int = 6
