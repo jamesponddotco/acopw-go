@@ -10,19 +10,17 @@
 
 Package `acopw` provides an easy-to-use, fast, and cryptographically
 secure way to generate cryptographically secure random passwords,
-passphrases, PINs, and UUIDs.
+passphrases, and PINs.
 
 **Samples for what this package may generate:**
 
 ```console
 (#lR?xdVe^o#;|{K>k%Y$,SXnn?nLl[=+|^cf|AWCtA}YoP(Vb=G^rwj]f;u@~Py
 u{AQTrcOcHG#/.K>j{?P=\=jm%O>)hC;.Y%l,~fE'v];^@AY!?I}=DzyKlE@GEKb
-728079
-996388
 hefty_spacetime_ENVELOPE_hearing_trend_fossils_unusable
 deplored-desert-victory-runtime-coupland-costly-CLASSICS
-030ed192-7d63-49b4-b0d4-cc9e11373df5
-d77b2d10-869a-4a85-b225-19d641f38139
+728079
+996388
 ```
 
 The packages uses [crypto/rand](https://godocs.io/crypto/rand) by
@@ -109,26 +107,6 @@ func main() {
 	}
 
 	log.Println(pin.Generate())
-}
-```
-
-### UUIDs
-
-To generate a UUID, use `UUID` and call the `Generate()` method.
-
-```go
-package main
-
-import (
-	"log"
-
-	"git.sr.ht/~jamesponddotco/acopw-go"
-)
-
-func main() {
-	var uuid acopw.UUID
-
-	log.Println(uuid.Generate())
 }
 ```
 
