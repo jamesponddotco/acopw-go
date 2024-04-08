@@ -8,9 +8,16 @@
 > **Note**: The underlying cryptographic implementations have not been
 > independently audited.
 
-Package `acopw` provides an easy-to-use, fast, and cryptographically
-secure way to generate cryptographically secure random passwords,
-passphrases, and PINs.
+Package `acopw` provides a simple, efficient, and secure way to generate
+random passwords, passphrases, and PINs using Go. It leverages the speed
+of `math/rand/v2` with the cryptographic security of `ChaCha8` for
+generating random data, ensuring the highest level of randomness,
+security, and performance.
+
+When generating diceware passwords, it uses a [curated list with **over
+23 thousand
+words**](https://git.sr.ht/~jamesponddotco/acopw-go/blob/trunk/words/word-list.txt),
+one of the largest word lists out there.
 
 **Samples for what this package may generate:**
 
@@ -22,11 +29,6 @@ deplored-desert-victory-runtime-coupland-costly-CLASSICS
 728079
 996388
 ```
-
-The packages uses [crypto/rand](https://godocs.io/crypto/rand) by
-default for generating random data. When generating diceware passwords,
-it uses a [curated list with **over 23 thousand
-words**](https://git.sr.ht/~jamesponddotco/acopw-go/blob/trunk/words/word-list.txt).
 
 ## Installation
 
@@ -126,7 +128,9 @@ All contributions are made under [the MIT License](LICENSE.md).
 ## Credits
 
 - Tests were mostly written using a combination of Claude 3 and GPT-4.
-- Big thanks to the EFF for providing [some word lists](https://www.eff.org/dice), which were complimented by me crawling Wikipedia.
+- Big thanks to the EFF for providing [some word
+  lists](https://www.eff.org/dice), which were complimented by me
+  [crawling Wikipedia](https://sr.ht/~jamesponddotco/wikiextract/).
 
 ## Resources
 
