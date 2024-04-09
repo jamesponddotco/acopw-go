@@ -5,9 +5,6 @@
 [![Coverage Report](https://img.shields.io/badge/coverage-97.2%25-brightgreen)](https://git.sr.ht/~jamesponddotco/acopw-go/tree/trunk/item/cover.out)
 [![builds.sr.ht status](https://builds.sr.ht/~jamesponddotco/acopw-go.svg)](https://builds.sr.ht/~jamesponddotco/acopw-go?)
 
-> **Note**: The underlying cryptographic implementations have not been
-> independently audited.
-
 Package `acopw` provides a simple, efficient, and secure way to generate
 random passwords, passphrases, and PINs using Go. It leverages the speed
 of `math/rand/v2` with the cryptographic security of `ChaCha8` for
@@ -125,12 +122,16 @@ for more details.
 
 All contributions are made under [the MIT License](LICENSE.md).
 
-## Credits
+## Acknowledgements
 
 - Tests were mostly written using a combination of Claude 3 and GPT-4.
 - Big thanks to the EFF for providing [some word
   lists](https://www.eff.org/dice), which were complimented by me
   [crawling Wikipedia](https://sr.ht/~jamesponddotco/wikiextract/).
+- Big thanks to [Christopher Wellons](https://nullprogram.com/) for
+  reviewing and auditing the underlying cryptographic implementation for
+  biases and security issues. He also helped with many of the
+  performance optimizations for the `v1.0.0` release.
 
 ## Resources
 
