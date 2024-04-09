@@ -37,7 +37,7 @@ type Random struct {
 }
 
 // Generate generates a random password.
-func (r *Random) Generate() string {
+func (r *Random) Generate() string { //nolint:unparam // appears to be a false positive
 	if r.random == nil {
 		var seed [32]byte
 
@@ -81,7 +81,7 @@ func (r *Random) Generate() string {
 
 // Charset returns the character set to use for generating the password.
 func (r *Random) charset() []string {
-	if r.characters == nil {
+	if r.characters == nil { //nolint:nestif // what other way is there?
 		charset := make([]string, 0, len(_charsetLower)+len(_charsetUpper)+len(_charsetNumbers)+len(_charsetSymbols))
 
 		if r.UseLower {
