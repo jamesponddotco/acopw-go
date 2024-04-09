@@ -16,7 +16,7 @@ When generating diceware passwords, it uses a [curated list with **over
 words**](https://git.sr.ht/~jamesponddotco/acopw-go/blob/trunk/words/word-list.txt),
 one of the largest word lists out there.
 
-**Samples for what this package may generate:**
+**Sample output:**
 
 ```console
 (#lR?xdVe^o#;|{K>k%Y$,SXnn?nLl[=+|^cf|AWCtA}YoP(Vb=G^rwj]f;u@~Py
@@ -29,10 +29,10 @@ deplored-desert-victory-runtime-coupland-costly-CLASSICS
 
 ## Installation
 
-To install `acopw`, run:
+To install `acopw` and use it in your project, run:
 
 ```console
-go get git.sr.ht/~jamesponddotco/acopw-go
+go get git.sr.ht/~jamesponddotco/acopw-go@latest
 ```
 
 ## Usage
