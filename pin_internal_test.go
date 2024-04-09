@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestPIN_Generate_Panic_FirstReadFull(t *testing.T) { //nolint:paralleltest // we're modifying rand.Reader
+func TestPIN_Generate_Panic(t *testing.T) { //nolint:paralleltest // we're modifying rand.Reader
 	origReader := rand.Reader
 
 	t.Cleanup(func() {

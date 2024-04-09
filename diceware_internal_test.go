@@ -28,8 +28,8 @@ func TestDiceware_Generate_Panic(t *testing.T) { //nolint:paralleltest // we're 
 	}()
 
 	diceware := Diceware{
-		Length:     7,    // Use 7 words.
-		Capitalize: true, // Capitalize the first letter of a random word.
+		Length:     7,
+		Capitalize: true,
 	}
 
 	_ = diceware.Generate()

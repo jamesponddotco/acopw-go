@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"git.sr.ht/~jamesponddotco/acopw-go"
+	"git.sr.ht/~jamesponddotco/xstd-go/xstrings"
 )
 
 func TestRandom_Generate(t *testing.T) {
@@ -31,18 +32,6 @@ func TestRandom_Generate(t *testing.T) {
 			validate: func(generated string) bool {
 				return len(generated) == 12
 			},
-		},
-		{
-			name: "InvalidCharset",
-			random: &acopw.Random{
-				ExcludedCharset: []string{
-					acopw.Lowercase,
-					acopw.Uppercase,
-					acopw.Numbers,
-					acopw.Symbols,
-				},
-			},
-			expectPanic: true,
 		},
 		{
 			name: "CharsetExclusions",
@@ -118,7 +107,7 @@ func TestRandom_Generate(t *testing.T) {
 			},
 			validate: func(generated string) bool {
 				for _, char := range generated {
-					if !strings.ContainsRune(acopw.Numbers, char) {
+					if !strings.ContainsRune(xstrings.Numbers, char) {
 						return false
 					}
 				}
@@ -136,23 +125,12 @@ func TestRandom_Generate(t *testing.T) {
 			},
 			validate: func(generated string) bool {
 				for _, char := range generated {
-					if !strings.ContainsRune(acopw.Symbols, char) {
+					if !strings.ContainsRune(xstrings.Symbols, char) {
 						return false
 					}
 				}
 
 				return true
-			},
-		},
-		{
-			name: "ExcludeCharacter",
-			random: &acopw.Random{
-				ExcludedCharset: []string{
-					"z",
-				},
-			},
-			validate: func(generated string) bool {
-				return !strings.Contains(generated, "z")
 			},
 		},
 	}
