@@ -3,30 +3,25 @@ package acopw
 import (
 	"crypto/rand"
 	"io"
-	"sync"
+	mrand "math/rand/v2"
 
 	"git.sr.ht/~jamesponddotco/xstd-go/xerrors"
 	"git.sr.ht/~jamesponddotco/xstd-go/xstrings"
-	"git.sr.ht/~jamesponddotco/xstd-go/xunsafe"
 )
 
 // ErrInvalidCharset is returned when the charset is invalid.
 const ErrInvalidCharset xerrors.Error = "no characters to build password in the charset"
-
-const (
-	Lowercase = xstrings.LowercaseLetters
-	Uppercase = xstrings.UppercaseLetters
-	Numbers   = xstrings.Numbers
-	Symbols   = xstrings.Symbols
-)
 
 // DefaultRandomLength is the default length of a random password.
 const DefaultRandomLength int = 128
 
 // Random contains configuration options for generating a random password.
 type Random struct {
-	// Charset is the character set to use for generating the password.
-	charset string
+	// random provides the source of entropy for generating the password.
+	random *mrand.Rand
+
+	// characters is the character set to use for generating the password.
+	characters []string
 
 	// ExcludedCharset is a list of characters that should not be used in the password.
 	ExcludedCharset []string
@@ -39,13 +34,20 @@ type Random struct {
 	UseUpper   bool
 	UseNumbers bool
 	UseSymbols bool
-
-	// once is used to ensure that the charset is only generated once.
-	once sync.Once
 }
 
 // Generate generates a random password.
 func (r *Random) Generate() string {
+	if r.random == nil {
+		var seed [32]byte
+
+		if _, err := io.ReadFull(rand.Reader, seed[:]); err != nil {
+			panic(err)
+		}
+
+		r.random = mrand.New(mrand.NewChaCha8(seed))
+	}
+
 	if r.Length < 1 {
 		r.Length = DefaultRandomLength
 	}
@@ -57,68 +59,65 @@ func (r *Random) Generate() string {
 		r.UseSymbols = true
 	}
 
-	charset := r.Charset()
-	if charset == "" {
+	charset := r.charset()
+
+	if len(charset) == 0 {
 		panic(ErrInvalidCharset)
 	}
 
-	var (
-		reader      = rand.Reader
-		password    = make([]byte, r.Length)
-		randomBytes = make([]byte, r.Length)
-		maxByte     = byte(256 - (256 % len(charset)))
-	)
-
-	if _, err := io.ReadFull(reader, randomBytes); err != nil {
-		panic(err)
-	}
+	password := make([]string, 0, r.Length)
 
 	for i := 0; i < r.Length; i++ {
-		b := randomBytes[i]
+		var (
+			index = r.random.IntN(len(charset))
+			char  = charset[index]
+		)
 
-		for b >= maxByte {
-			if _, err := io.ReadFull(reader, randomBytes[i:i+1]); err != nil {
-				panic(err)
-			}
-
-			b = randomBytes[i]
-		}
-
-		password[i] = charset[int(b)%len(charset)]
+		password = append(password, char)
 	}
 
-	return xunsafe.BytesToString(password)
+	return xstrings.Join(password...)
 }
 
 // Charset returns the character set to use for generating the password.
-func (r *Random) Charset() string {
-	r.once.Do(func() {
-		var charset string
+func (r *Random) charset() []string {
+	if r.characters == nil {
+		charset := make([]string, 0, len(_charsetLower)+len(_charsetUpper)+len(_charsetNumbers)+len(_charsetSymbols))
 
 		if r.UseLower {
-			charset += Lowercase
+			charset = append(charset, _charsetLower...)
 		}
 
 		if r.UseUpper {
-			charset += Uppercase
+			charset = append(charset, _charsetUpper...)
 		}
 
 		if r.UseNumbers {
-			charset += Numbers
+			charset = append(charset, _charsetNumbers...)
 		}
 
 		if r.UseSymbols {
-			charset += Symbols
+			charset = append(charset, _charsetSymbols...)
 		}
 
 		if len(r.ExcludedCharset) > 0 {
-			for _, excluded := range r.ExcludedCharset {
-				charset = xstrings.Remove(charset, excluded)
+			excludedChars := make(map[string]bool, len(r.ExcludedCharset))
+			for _, char := range r.ExcludedCharset {
+				excludedChars[char] = true
 			}
+
+			filteredCharset := make([]string, 0, len(charset))
+			for _, char := range charset { //nolint:wsl // looks like a false positive to me
+				if !excludedChars[char] {
+					filteredCharset = append(filteredCharset, char)
+				}
+			}
+
+			charset = filteredCharset
 		}
 
-		r.charset = charset
-	})
+		r.characters = charset
+	}
 
-	return r.charset
+	return r.characters
 }

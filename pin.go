@@ -3,9 +3,9 @@ package acopw
 import (
 	"crypto/rand"
 	"io"
+	mrand "math/rand/v2"
 
 	"git.sr.ht/~jamesponddotco/xstd-go/xstrings"
-	"git.sr.ht/~jamesponddotco/xstd-go/xunsafe"
 )
 
 // DefaultPINLength is the default length of a PIN.
@@ -13,40 +13,39 @@ const DefaultPINLength int = 6
 
 // PIN contains configuration options for generating PIN pins.
 type PIN struct {
+	// random provides the source of entropy for generating the PIN.
+	random *mrand.Rand
+
 	// Length is the length of the generated PIN.
 	Length int
 }
 
 // Generate generates a random PIN.
 func (p *PIN) Generate() string {
+	if p.random == nil {
+		var seed [32]byte
+
+		if _, err := io.ReadFull(rand.Reader, seed[:]); err != nil {
+			panic(err)
+		}
+
+		p.random = mrand.New(mrand.NewChaCha8(seed))
+	}
+
 	if p.Length < 1 {
 		p.Length = DefaultPINLength
 	}
 
-	var (
-		charset     = xstrings.Numbers
-		reader      = rand.Reader
-		pin         = make([]byte, p.Length)
-		randomBytes = make([]byte, p.Length)
-		maxByte     = byte(256 - (256 % len(charset)))
-	)
-
-	if _, err := io.ReadFull(reader, randomBytes); err != nil {
-		panic(err)
-	}
+	pin := make([]string, 0, p.Length)
 
 	for i := 0; i < p.Length; i++ {
-		b := randomBytes[i]
-		if b >= maxByte {
-			if _, err := io.ReadFull(reader, randomBytes[i:i+1]); err != nil {
-				panic(err)
-			}
+		var (
+			index = p.random.IntN(len(_charsetNumbers))
+			char  = _charsetNumbers[index]
+		)
 
-			b = randomBytes[i]
-		}
-
-		pin[i] = charset[int(b)%len(charset)]
+		pin = append(pin, char)
 	}
 
-	return xunsafe.BytesToString(pin)
+	return xstrings.Join(pin...)
 }
