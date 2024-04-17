@@ -9,13 +9,14 @@ import (
 	"git.sr.ht/~jamesponddotco/xstd-go/xstrings"
 )
 
-// ErrInvalidCharset is returned when the charset is invalid.
+// ErrInvalidCharset is returned when the internal character set is empty.
 const ErrInvalidCharset xerrors.Error = "no characters to build password in the charset"
 
 // DefaultRandomLength is the default length of a random password.
 const DefaultRandomLength int = 128
 
-// Random contains configuration options for generating a random password.
+// Random is a policy for generating ChaCha8-based cryptographically strong
+// random passwords.
 type Random struct {
 	// random provides the source of entropy for generating the password.
 	random *mrand.Rand
@@ -23,20 +24,26 @@ type Random struct {
 	// characters is the character set to use for generating the password.
 	characters []string
 
-	// ExcludedCharset is a list of characters that should not be used in the password.
+	// ExcludedCharset is a list of characters that should not be included in
+	// the generated password.
 	ExcludedCharset []string
 
-	// Length is the length of the password.
+	// Length is the length of the password. If less than 1, it defaults to 128.
 	Length int
 
-	// UseLower, UseUpper, UseNumbers, and UseSymbols specify whether or not to use the corresponding character class.
+	// UseLower, UseUpper, UseNumbers, and UseSymbols specify whether or not to
+	// use the corresponding character class in the generated password.
+	//
+	// If none of these are true, it defaults to true for all four.
 	UseLower   bool
 	UseUpper   bool
 	UseNumbers bool
 	UseSymbols bool
 }
 
-// Generate generates a random password.
+// Generate returns a cryptographically strong random password for the policy.
+// It panics if it can't get entropy from the source of randomness or if the
+// internally generated character set is empty.
 func (r *Random) Generate() string { //nolint:unparam // appears to be a false positive
 	if r.random == nil {
 		var seed [32]byte
