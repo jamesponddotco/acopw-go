@@ -1,7 +1,9 @@
 package acopw_test
 
 import (
+	"fmt"
 	"log"
+	"os"
 
 	"git.sr.ht/~jamesponddotco/acopw-go"
 )
@@ -19,8 +21,10 @@ func ExampleRandom_Generate() {
 		UseSymbols: true, // Use symbols
 	}
 
-	// Generate and print a random password.
-	log.Print(password.Generate())
+	// Generate and print a random password. Use os.Stdout in the real world.
+	if _, err := fmt.Fprintln(os.Stderr, password.Generate()); err != nil {
+		log.Fatal(err)
+	}
 	// Output:
 	//
 }

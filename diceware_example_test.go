@@ -1,7 +1,9 @@
 package acopw_test
 
 import (
+	"fmt"
 	"log"
+	"os"
 
 	"git.sr.ht/~jamesponddotco/acopw-go"
 )
@@ -13,7 +15,10 @@ func ExampleDiceware_Generate() {
 		Capitalize: true, // Capitalize the first letter of a random word.
 	}
 
-	// Generate and print a random diceware password.
-	log.Print(password.Generate())
+	// Generate and print a random diceware password. Use os.Stderr in the real
+	// world.
+	if _, err := fmt.Fprintln(os.Stderr, password.Generate()); err != nil {
+		log.Fatal(err)
+	}
 	// Output:
 }

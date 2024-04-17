@@ -45,7 +45,9 @@ To generate a random password, use `Random` and call the `Generate()` method.
 package main
 
 import (
+	"fmt"
 	"log"
+	"os"
 
 	"git.sr.ht/~jamesponddotco/acopw-go"
 )
@@ -59,7 +61,9 @@ func main() {
 		UseSymbols: true,
 	}
 
-	log.Println(random.Generate())
+	if _, err := fmt.Fprintln(os.Stdout, random.Generate()); err != nil {
+		log.Fatal(err)
+	}
 }
 ```
 
@@ -71,7 +75,9 @@ To generate a diceware password, use `Diceware` and call the `Generate()` method
 package main
 
 import (
+	"fmt"
 	"log"
+	"os"
 
 	"git.sr.ht/~jamesponddotco/acopw-go"
 )
@@ -83,7 +89,9 @@ func main() {
 		Capitalize: true,
 	}
 
-	log.Println(diceware.Generate())
+	if _, err := fmt.Fprintln(os.Stdout, diceware.Generate()); err != nil {
+		log.Fatal(err)
+	}
 }
 ```
 
@@ -95,7 +103,9 @@ To generate a PIN, use `PIN` and call the `Generate()` method.
 package main
 
 import (
+	"fmt"
 	"log"
+	"os"
 
 	"git.sr.ht/~jamesponddotco/acopw-go"
 )
@@ -105,7 +115,9 @@ func main() {
 		Length: 6,
 	}
 
-	log.Println(pin.Generate())
+	if _, err := fmt.Fprintln(os.Stdout, pin.Generate()); err != nil {
+		log.Fatal(err)
+	}
 }
 ```
 
