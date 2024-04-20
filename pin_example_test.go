@@ -14,7 +14,7 @@ func ExamplePIN_Generate() {
 		Length: 6, // Generate a 6 digit PIN.
 	}
 
-	// Generate and print a random PIN. Use os.Stderr in the real world.
+	// Generate and print a random PIN. Use os.Stdout in the real world.
 	if _, err := fmt.Fprintln(os.Stderr, pin.Generate()); err != nil {
 		log.Fatal(err)
 	}
