@@ -52,7 +52,7 @@ func (r *Random) Generate() string { //nolint:unparam // appears to be a false p
 			panic(err)
 		}
 
-		r.random = mrand.New(mrand.NewChaCha8(seed))
+		r.random = mrand.New(mrand.NewChaCha8(seed)) //nolint:gosec // we seed with crypto/rand
 	}
 
 	if r.Length < 1 {

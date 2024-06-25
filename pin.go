@@ -32,7 +32,7 @@ func (p *PIN) Generate() string {
 			panic(err)
 		}
 
-		p.random = mrand.New(mrand.NewChaCha8(seed))
+		p.random = mrand.New(mrand.NewChaCha8(seed)) //nolint:gosec // we seed with crypto/rand
 	}
 
 	if p.Length < 1 {

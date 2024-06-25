@@ -52,7 +52,7 @@ func (d *Diceware) Generate() string {
 			panic(err)
 		}
 
-		d.random = mrand.New(mrand.NewChaCha8(seed))
+		d.random = mrand.New(mrand.NewChaCha8(seed)) //nolint:gosec // we seed with crypto/rand
 	}
 
 	if d.Length < 1 {
