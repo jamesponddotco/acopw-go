@@ -74,7 +74,7 @@ func (r *Random) Generate() string { //nolint:unparam // appears to be a false p
 
 	password := make([]string, 0, r.Length)
 
-	for i := 0; i < r.Length; i++ {
+	for range r.Length {
 		var (
 			index = r.random.IntN(len(charset))
 			char  = charset[index]

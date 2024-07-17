@@ -82,7 +82,7 @@ func (d *Diceware) Generate() string {
 
 	words := make([]string, 0, d.Length)
 
-	for i := 0; i < d.Length; i++ {
+	for i := range d.Length {
 		index = d.random.IntN(len(wordList))
 		word := wordList[index]
 

@@ -41,7 +41,7 @@ func (p *PIN) Generate() string {
 
 	pin := make([]string, 0, p.Length)
 
-	for i := 0; i < p.Length; i++ {
+	for range p.Length {
 		var (
 			index = p.random.IntN(len(_charsetNumbers))
 			char  = _charsetNumbers[index]
