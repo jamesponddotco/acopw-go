@@ -83,10 +83,8 @@ func (d *Diceware) Generate() string {
 	words := make([]string, 0, d.Length)
 
 	for i := 0; i < d.Length; i++ {
-		var (
-			index = d.random.IntN(len(wordList))
-			word  = wordList[index]
-		)
+		index = d.random.IntN(len(wordList))
+		word := wordList[index]
 
 		if i == capitalizeIndex {
 			word = strings.ToUpper(word)
