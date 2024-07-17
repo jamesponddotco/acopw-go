@@ -219,6 +219,9 @@ issues:
         - containedctx
         - gochecknoglobals
         - nilerr
+        - nonamedreturns
         - wrapcheck
     - path: _test\.go
       text: "fieldalignment"
+    - path: _test\.go
+      text: "deep-exit"
