@@ -4,9 +4,9 @@ import (
 	"crypto/rand"
 	"io"
 	mrand "math/rand/v2"
+	"strings"
 
 	"git.sr.ht/~jamesponddotco/xstd-go/xerrors"
-	"git.sr.ht/~jamesponddotco/xstd-go/xstrings"
 )
 
 // ErrInvalidCharset is returned when the internal character set is empty.
@@ -83,7 +83,7 @@ func (r *Random) Generate() string { //nolint:unparam // appears to be a false p
 		password = append(password, char)
 	}
 
-	return xstrings.Join(password...)
+	return strings.Join(password, "")
 }
 
 // Charset returns the character set to use for generating the password.

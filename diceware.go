@@ -6,8 +6,6 @@ import (
 	"io"
 	mrand "math/rand/v2"
 	"strings"
-
-	"git.sr.ht/~jamesponddotco/xstd-go/xstrings"
 )
 
 //go:embed words/word-list.txt
@@ -93,5 +91,5 @@ func (d *Diceware) Generate() string {
 		words = append(words, word)
 	}
 
-	return xstrings.JoinWithSeparator(d.Separator, words...)
+	return strings.Join(words, d.Separator)
 }

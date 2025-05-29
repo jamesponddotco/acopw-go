@@ -4,8 +4,7 @@ import (
 	"crypto/rand"
 	"io"
 	mrand "math/rand/v2"
-
-	"git.sr.ht/~jamesponddotco/xstd-go/xstrings"
+	"strings"
 )
 
 // DefaultPINLength is the default length of a PIN.
@@ -50,5 +49,5 @@ func (p *PIN) Generate() string {
 		pin = append(pin, char)
 	}
 
-	return xstrings.Join(pin...)
+	return strings.Join(pin, "")
 }
