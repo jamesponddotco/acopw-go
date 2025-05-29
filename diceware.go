@@ -34,6 +34,9 @@ type Diceware struct {
 
 	// Length is the number of words to include in the generated password. If
 	// less than 1, it defaults to 8.
+	//
+	// It's the caller's responsibility to limit the maximum length to prevent
+	// memory exhaustion via large length values.
 	Length int
 
 	// Capitalize indicates whether a random word should be capitalized.

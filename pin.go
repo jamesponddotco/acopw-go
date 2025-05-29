@@ -18,6 +18,9 @@ type PIN struct {
 
 	// Length is the length of the generated PIN. If less than 1, it defaults to
 	// 6.
+	//
+	// It's the caller's responsibility to limit the maximum length to prevent
+	// memory exhaustion via large length values.
 	Length int
 }
 
