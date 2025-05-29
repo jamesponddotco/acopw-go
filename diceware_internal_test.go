@@ -2,17 +2,14 @@ package acopw
 
 import (
 	"crypto/rand"
+	"errors"
 	"testing"
-
-	"git.sr.ht/~jamesponddotco/xstd-go/xerrors"
 )
-
-const ErrGeneric xerrors.Error = "error"
 
 type mockReader struct{}
 
 func (*mockReader) Read(_ []byte) (n int, err error) {
-	return 0, ErrGeneric
+	return 0, errors.New("error")
 }
 
 func TestDiceware_Generate_Panic(t *testing.T) { //nolint:paralleltest // we're modifying rand.Reader

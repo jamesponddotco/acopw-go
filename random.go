@@ -5,12 +5,7 @@ import (
 	"io"
 	mrand "math/rand/v2"
 	"strings"
-
-	"git.sr.ht/~jamesponddotco/xstd-go/xerrors"
 )
-
-// ErrInvalidCharset is returned when the internal character set is empty.
-const ErrInvalidCharset xerrors.Error = "no characters to build password in the charset"
 
 // DefaultRandomLength is the default length of a random password.
 const DefaultRandomLength int = 128
@@ -69,7 +64,7 @@ func (r *Random) Generate() string { //nolint:unparam // appears to be a false p
 	charset := r.charset()
 
 	if len(charset) == 0 {
-		panic(ErrInvalidCharset)
+		panic("no characters to build password in the charset")
 	}
 
 	password := make([]string, 0, r.Length)
