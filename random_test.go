@@ -5,11 +5,15 @@ import (
 	"testing"
 
 	"git.sr.ht/~jamesponddotco/acopw-go"
-	"git.sr.ht/~jamesponddotco/xstd-go/xstrings"
 )
 
 func TestRandom_Generate(t *testing.T) {
 	t.Parallel()
+
+	const (
+		numbers string = "0123456789"
+		symbols string = `!"#$%&'()*+,-./:;<=>?@[\]^_{|}~`
+	)
 
 	tests := []struct {
 		name        string
@@ -107,7 +111,7 @@ func TestRandom_Generate(t *testing.T) {
 			},
 			validate: func(generated string) bool {
 				for _, char := range generated {
-					if !strings.ContainsRune(xstrings.Numbers, char) {
+					if !strings.ContainsRune(numbers, char) {
 						return false
 					}
 				}
@@ -125,7 +129,7 @@ func TestRandom_Generate(t *testing.T) {
 			},
 			validate: func(generated string) bool {
 				for _, char := range generated {
-					if !strings.ContainsRune(xstrings.Symbols, char) {
+					if !strings.ContainsRune(symbols, char) {
 						return false
 					}
 				}
