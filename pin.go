@@ -11,7 +11,7 @@ import (
 const DefaultPINLength int = 6
 
 // PIN is a policy for generating ChaCha8-based cryptographically strong random
-// PINs.
+// PINs. Instances are not safe for concurrent use.
 type PIN struct {
 	// random provides the source of entropy for generating the PIN.
 	random *mrand.Rand

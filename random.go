@@ -11,7 +11,7 @@ import (
 const DefaultRandomLength int = 128
 
 // Random is a policy for generating ChaCha8-based cryptographically strong
-// random passwords.
+// random passwords. Instances are not safe for concurrent use.
 type Random struct {
 	// random provides the source of entropy for generating the password.
 	random *mrand.Rand

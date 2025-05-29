@@ -20,7 +20,7 @@ var (
 const DefaultDicewareLength int = 8
 
 // Diceware is a policy for generating ChaCha8-based cryptographically strong
-// diceware passwords.
+// diceware passwords. Instances are not safe for concurrent use.
 type Diceware struct {
 	// random provides the source of entropy for generating the diceware password.
 	random *mrand.Rand
